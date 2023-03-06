@@ -1,0 +1,11 @@
+{
+    "name": "CAST Test",
+    "version": "1.0.0",
+    "description": "Test implementation of CAST",
+    "manifest_version": 3,
+    "author": "CAST team",
+    "action": {
+        "default_popup": "index.html",
+        "default_title": "CAST Test"
+    }
+}
