@@ -19,13 +19,13 @@
   },
 
 "background": {
-    "scripts": ["bower_components/jquery-3.6.4.min/index.js","typo/typo.js","eventPage.js"]
+    "scripts": ["jquery-3.6.4.min/index.js","typo/typo.js","eventPage.js"]
 },
 
 "content_scripts":[
     {
       "matches": ["<all_urls>"],
-      "js": ["bower_components/jquery-3.6.4.min/index.js", "content.js"],
+      "js": ["jquery-3.6.4.min.js", "content.js"],
       "css": ["content.css"]
     }
 ],

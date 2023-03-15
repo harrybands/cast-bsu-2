@@ -1,0 +1,204 @@
+.wrapWord {
+	/*font-weight: bold; */
+	color: red;
+	/*text-decoration: underline;*/
+	
+	padding-left: 7px;
+	padding-right: 7px;
+	margin-left: -7px;
+	margin-right: -7px;
+	
+	border: solid 0px;
+	border-radius: 50%;
+	box-shadow: 0px 0px 0px 0px red;
+}
+
+.wrapWordBorder {
+	box-shadow: 0px 0px 0px 3px red;
+}
+
+.wrapWord:hover {
+	/*background-color: #ffcc99;*/
+	cursor: pointer;
+}
+
+.kidspell-popup {
+	height: auto;
+	width: 240px;
+	position: absolute;
+	background-color: white;
+	display: block;
+	/*
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    */
+	border-radius: 2%;
+	z-index: 9999; /*brings to front */
+	box-shadow: 0 0 1px 1px #999999;
+	line-height: 2em;
+	margin-bottom:30px;
+}
+
+.popup-small{
+	width:140px;
+}
+
+
+#myPopupTitle {
+	text-align: left;
+	font-weight: bold;
+	font-size: 16px;
+	color: black;
+	margin: 5px;
+	font-family: 'Open Sans', Arial, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.contentButton {
+	margin: 5px;
+	display: flex;
+	height: 35px;
+	font-size: 16px;
+	position: relative;
+}
+
+.popup-small .contentButton {
+	height:28px;
+}
+
+.smallText {
+	font-size: 13px !important;
+}
+
+#misButton {
+	transition: background-color 0.2s ease-in-out;
+	background-color: #ffca8e;
+	border-style: none none solid none;
+	border-width: 2px;
+	border-color: #ffbc6f;
+	border-radius: 5px;
+	width: 100%;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+#misButton:hover {
+	background-color: #ffbc6f;
+	cursor: pointer;
+}
+
+#myPopupWord {
+	font-size: 16px;
+	padding: 1px;
+	padding-left: 5px;
+	color: #333333;
+}
+
+.suggestButton {
+	transition: background-color 0.2s ease-in-out;
+    background-color: #cedcff;
+    border-style: none none solid none;
+    border-width: 2px;
+    border-color: #a9bbff;
+	border-radius: 5px;
+	width: 100%;
+	display: flex;
+	vertical-align: middle;
+}
+
+.suggestButton:hover {
+	background-color: #a9bbff;
+	cursor: pointer;
+}
+
+.suggestionButtonAuto {
+	background-color: #a9bbff
+}
+
+.spellingSuggestion {
+	padding: 1px;
+	padding-left:5px;
+	color: #333333;
+	width: 100%;
+}
+
+.imgWindow {
+	position: absolute;
+	width:225px;
+	height: 150px;
+	/*top: -31.5px;*/
+	top: -75px;
+	left: 105%;
+	background-color: #a9bbff;
+	border-radius: 5px;
+	display: none;
+	z-index: 1000;
+}
+
+.imgExpand {
+	/*position: absolute;*/
+	width:100%;
+	height:100%;
+    object-fit:cover;
+	/*transition: display 0.5s ease-in-out;*/
+	border-radius: 5px;
+}
+
+.contentWrapper {
+	display: flex;
+}
+
+/*** This is for drawing circles ***/
+.kidspell-svg {
+	top:0;
+	left:0;
+	position: absolute;
+}
+.kidspell-circle {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: stroke 1.5s ease-out forwards;
+}
+
+@keyframes stroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/*** end of circle drawing ***/
+
+.suggestion-speaker-button {
+	position:absolute;
+	right:0;
+	top:50%;
+	transform:translateY(-50%);
+	padding: 3.5%;
+	right: 0%;
+	background-color: white;
+	border-radius: 5px;
+	color: #409bff;
+	box-shadow: 0px 0px 5px 1px #888888;
+}
+
+.kidspell-close-button {
+	position:absolute;
+	left:0;
+	top:50%;
+	transform:translateY(-50%);
+	padding: 3.5%;
+	border-radius: 5px;
+	color: red;
+	font-size:25px;
+}
+
+.button-glow {
+	box-shadow: 0px 0px 5px 3px #1e90ff;
+}
+
+.stopWord {
+	color: #c1c1c1;
+}
+
+.kidspell-mirror::-webkit-scrollbar {
+	display: none;
+  }
