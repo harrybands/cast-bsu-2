@@ -19,7 +19,7 @@
   },
 
 "background": {
-    "scripts": ["jquery-3.6.4.min/index.js","typo/typo.js","eventPage.js"]
+    "service_worker": ["jquery-3.6.4.min/index.js","typo/typo.js","eventPage.js"]
 },
 
 "content_scripts":[

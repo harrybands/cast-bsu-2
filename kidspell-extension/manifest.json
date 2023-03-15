@@ -19,9 +19,10 @@
         "default_popup": "popup.html",
         "default_title": "CASTSpellChecker"
     },
-    "background": {
-        "service_worker": ["./background.js"]
-    },
+        /** "background": {
+         "service_worker": ["./background.js"]
+     },
+     */
     "content_scripts":[
         {
           "matches": ["https://www.google.com/*", "https://www.bing.com/*"],
@@ -29,10 +30,10 @@
           "css": ["css/kidspell.css", "css/all.css"]
         }
       ],
-    "web_accessible_resources": [
-       "css/all.css",
-       "webfonts/*" 
-     ],
+    // "web_accessible_resources": [
+    //    "css/all.css",
+    //    "webfonts/*" 
+    //  ],
     "options_page": "./options.html",
     "permissions": [
         "storage"
