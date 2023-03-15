@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cast Spell Checker</title>
+    <script src="bower_components/jquery-3.6.4.min/index.js"></script>
+    
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css">
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="modal-header">
+        <img src="icon128.png" alt="CAST Spell Checker" class="logo-icon">
+        <div class="title">CAST Spell Checker</div>
+        <span class="version">(1.0.0)</span>
+    </div>
+
+    <div class="settings">
+        <div class="option">
+            <input id="enableVoice" type="checkbox" name="Enable Voice"/>
+            Enable Voice
+        </div>
+        <div class="option">
+            <input id="enablePictures" type="checkbox" name="Enable Pictures"/>
+            Enable Pictures
+        </div>
+        <select id="selectVoice">
+                <option class="voice" value="Justin" selected>Justin</option>
+                <option class="voice" value="Ivy">Ivy</option>
+                <option class="voice" value="Microsoft">Microsoft</option>
+        </select>
+
+        <div class="optionTitle">Spelling Suggestion Differences</div>
+        <div id="highlightDifference">
+            <input class="hightlightDifferenceOption" id="highlightBackground" type="checkbox" name="highlightBackground"/>
+            Highlight Background <br/>
+            <input class="hightlightDifferenceOption" id="underline"type="checkbox" name="underline"/>
+            Underline <br/>
+            <input class="hightlightDifferenceOption" id="changeTextColor" type="checkbox" name="changeTextColor"/>
+            Change Text Color<br/>
+        </div>
+        
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
