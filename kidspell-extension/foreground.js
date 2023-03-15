@@ -220,13 +220,11 @@ function create_mirror($node){
         'white-space': 'pre',
         'top': offset.top,
         'left': offset.left, 
-        'background': 'rgba(87, 216, 255, 0.315)',
         'background': 'transparent', 
         'border-color': 'transparent',
         'pointer-events': 'none',
         'overflow': 'hidden',
         'color': 'limegreen',
-        'color': 'transparent', 
         'z-index': '2147483648', 
         //'visibility': 'hidden',
     });
