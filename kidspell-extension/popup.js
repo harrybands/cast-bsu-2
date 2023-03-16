@@ -1,4 +1,4 @@
-var enableVoice;
+let enableVoice;
 chrome.storage.sync.get(['enableVoice'], function(data){
     if(data.enableVoice != null) {
         console.log("Current value for enableVoice: " + data.enableVoice);
@@ -28,7 +28,7 @@ $("#enableVoice").click(function() {
     });
 })
 
-var enablePictures;
+let enablePictures;
 chrome.storage.sync.get(['enablePictures'], function(data){
     if(data.enablePictures != null) {
         console.log("Current value for enablePictures: " + data.enablePictures);
@@ -59,7 +59,7 @@ $("#enablePictures").click(function() {
 })
 
 
-var autoPopup;
+let autoPopup;
 chrome.storage.sync.get(['autoPopup'], function(data){
     if(data.autoPopup != null) {
         console.log("Current value for auto popup: " + data.autoPopup);
@@ -91,7 +91,7 @@ $("#autoPopup").click(function() {
 
 
 
-var autoRead;
+let autoRead;
 chrome.storage.sync.get(['autoRead'], function(data){
     if(data.autoRead != null) {
         console.log("Current value for auto popup: " + data.autoRead);

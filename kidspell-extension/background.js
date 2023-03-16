@@ -2,61 +2,27 @@
 console.log('service worker is running?');
 
 //Read Dictionary
-var dictionary = {};
-fetch('dictionary.txt')
+let dictionary = {};
+  fetch('dictionary.txt')
   .then(response => response.text())
   .then(text => set_up_dictionary(text))
 
-// updated set_up_dictionary function
-
-function set_up_dictionary(text) {
-    const dictionaryCacheName = 'dictionary-cache';
-    
-    caches.open(dictionaryCacheName)
-      .then(function(cache) {
-        // Add the dictionary data to the cache
-        text.split(/\r?\n/).forEach(element => cache.add(element));
-        console.log('Dictionary data cached:', text);
-      })
-      .catch(function(err) {
-        console.error('Error caching dictionary data:', err);
-      });
-      if (request.todo == "getDictionary") {
-        const dictionaryCacheName = 'dictionary-cache';       
-        caches.match(request.url)
-          .then(function(response) {
-            if (response) {
-              return response.text();
-            } else {
-              throw new Error('Dictionary data not found in cache');
+  // Dictionary helper function
+function set_up_dictionary(text){
+    text.split(/\r?\n/).forEach(element => dictionary[element] = true);
+    console.log(dictionary);
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+        chrome.tabs.sendMessage(
+            tabs[0].data, 
+            {
+                todo: "set_dictionary", 
+                dictionary: dictionary
             }
-          })
-          .then(function(text) {
-            sendResponse({dictionary: text.split(/\r?\n/)});
-          })
-          .catch(function(err) {
-            console.error('Error retrieving dictionary data:', err);
-          });
-      }
-  }
+        );
+    }); 
+}
 
-
-//Dictionary helper function
-// function set_up_dictionary(text){
-//     text.split(/\r?\n/).forEach(element => dictionary[element] = true);
-//     console.log(dictionary);
-//     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-//         chrome.tabs.sendMessage(
-//             tabs[0].id, 
-//             {
-//                 todo: "set_dictionary", 
-//                 dictionary: dictionary
-//             }
-//         );
-//     }); 
-// }
-
-var uuid;
+let uuid;
 chrome.storage.sync.get(['uuid'], function(data){
     if(data.uuid) {
         console.log("Using already created UUID: " + data.uuid);
@@ -75,14 +41,11 @@ function uuidv4() {
     )
 }
 
-
-
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     /*displays icon*/
     if (request.todo == "showPageAction") {
         chrome.tabs.query({active:true, currentWindow:true}, function(tabs){
-            chrome.pageAction.show(tabs[0].id);
+            chrome.pageAction.show(tabs[0].data);
         });
     }
 

@@ -1,15 +1,18 @@
 {
     "name": "KidSpell Extension",
     "description": "An application to help kids with spelling! Developed by the CAST team at Boise State University.",
-    "version": "1.0.0",
+    "version": "1.0",
     "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+     },
     "icons": {
         "16": "./images/icon16.png",
         "32": "./images/icon32.png",
         "48": "./images/icon48.png",
         "128": "./images/icon128.png"
     },
-    "page_action": {
+    "action": {
         "default_icon": {
             "16": "./images/icon16.png",
             "32": "./images/icon32.png",
@@ -19,21 +22,28 @@
         "default_popup": "popup.html",
         "default_title": "CASTSpellChecker"
     },
-        /** "background": {
-         "service_worker": ["./background.js"]
-     },
-     */
     "content_scripts":[
         {
-          "matches": ["https://www.google.com/*", "https://www.bing.com/*"],
-          "js": ["jquery-3.6.4.min.js"],
+          "matches": [
+            "https://www.google.com/*", 
+            "https://www.bing.com/*"],
+          "js": ["jquery-3.6.4-min.js",
+                "dmp/diff_match_patch.js",
+                "foreground.js"],
           "css": ["css/kidspell.css", "css/all.css"]
         }
       ],
-    // "web_accessible_resources": [
-    //    "css/all.css",
-    //    "webfonts/*" 
-    //  ],
+    "web_accessible_resources": [
+    { 
+        "resources": [ 
+            "css/all.css",
+            "webfonts/*"
+    ],
+        "matches": [
+            "https://www.google.com/*", 
+            "https://www.bing.com/*"]
+    }],
+
     "options_page": "./options.html",
     "permissions": [
         "storage"
