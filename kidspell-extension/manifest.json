@@ -19,7 +19,7 @@
             "48": "./images/icon48.png",
             "128": "./images/icon128.png"
         },
-        "default_popup": "popup.html",
+        "default_popup": "./popup/popup.html",
         "default_title": "CASTSpellChecker"
     },
     "content_scripts":[
@@ -30,22 +30,26 @@
           "js": ["jquery-3.6.4-min.js",
                 "dmp/diff_match_patch.js",
                 "foreground.js"],
-          "css": ["css/kidspell.css", "css/all.css"]
+          "css": ["css/kidspell.css", 
+                "css/all.css"]
         }
       ],
     "web_accessible_resources": [
     { 
         "resources": [ 
             "css/all.css",
-            "webfonts/*"
+            "webfonts/*",
+            "jquery-3.6.4-min.js"
     ],
         "matches": [
             "https://www.google.com/*", 
             "https://www.bing.com/*"]
     }],
 
-    "options_page": "./options.html",
+    "options_page": "./options/options.html",
     "permissions": [
-        "storage"
+        "storage",
+        "scripting",
+        "declarativeNetRequest"
     ]
 }

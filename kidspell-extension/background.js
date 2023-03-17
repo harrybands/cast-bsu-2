@@ -8,12 +8,13 @@ let dictionary = {};
   .then(text => set_up_dictionary(text))
 
   // Dictionary helper function
-function set_up_dictionary(text){
+async function set_up_dictionary(text){
+    // const tabIds = tabs.map(({id}) =>id);
     text.split(/\r?\n/).forEach(element => dictionary[element] = true);
     console.log(dictionary);
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    await chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
         chrome.tabs.sendMessage(
-            tabs[0].data, 
+            tabs[0].id, 
             {
                 todo: "set_dictionary", 
                 dictionary: dictionary
@@ -45,7 +46,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     /*displays icon*/
     if (request.todo == "showPageAction") {
         chrome.tabs.query({active:true, currentWindow:true}, function(tabs){
-            chrome.pageAction.show(tabs[0].data);
+            chrome.pageAction.sendMessage(tabs[0].id);
         });
     }
 
