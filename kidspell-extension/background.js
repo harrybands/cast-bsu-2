@@ -1,6 +1,3 @@
-// check service worker
-console.log('service worker is running?');
-
 //Read Dictionary
 let dictionary = {};
   fetch('dictionary.txt')
@@ -46,7 +43,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     /*displays icon*/
     if (request.todo == "showPageAction") {
         chrome.tabs.query({active:true, currentWindow:true}, function(tabs){
-            chrome.pageAction.sendMessage(tabs[0].id);
+            chrome.action.sync(tabs[0].id);
         });
     }
 
