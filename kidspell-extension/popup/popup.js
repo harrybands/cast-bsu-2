@@ -121,23 +121,3 @@ $("#autoRead").click(function() {
     });
 })
 
-//Read Dictionary
-let dictionary = {};
-  fetch('dictionary.txt')
-  .then(response => response.text())
-  .then(text => set_up_dictionary(text))
-
-  // Dictionary helper function
-async function set_up_dictionary(text){
-   text.split(/\r?\n/).forEach(element => dictionary[element] = true);
-    await chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-        const message  =  {
-                todo: "set_dictionary", 
-                dictionary: dictionary
-            }
-        chrome.tabs.sendMessage(
-             tabs[0].id, 
-            message
-        );
-    }); 
-}
