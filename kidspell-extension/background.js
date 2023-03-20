@@ -1,27 +1,7 @@
-//Read Dictionary
-let dictionary = {};
-  fetch('dictionary.txt')
-  .then(response => response.text())
-  .then(text => set_up_dictionary(text))
-
-  // Dictionary helper function
-async function set_up_dictionary(text){
-    // const tabIds = tabs.map(({id}) =>id);
-    text.split(/\r?\n/).forEach(element => dictionary[element] = true);
-    console.log(dictionary);
-    await chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-        chrome.tabs.sendMessage(
-            tabs[0].id, 
-            {
-                todo: "set_dictionary", 
-                dictionary: dictionary
-            }
-        );
-    }); 
-}
 
 let uuid;
 chrome.storage.sync.get(['uuid'], function(data){
+    console.log("testing");
     if(data.uuid) {
         console.log("Using already created UUID: " + data.uuid);
         uuid = data.uuid;
