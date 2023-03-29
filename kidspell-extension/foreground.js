@@ -411,7 +411,7 @@ function handleSpellingError(word_data){
 */
 async function spellcheckListener(request) {
     let result;
-    try {
+     try {
         result = await $.ajax({
             dataType: "json",
             type: "GET",
@@ -458,10 +458,10 @@ function createWindowListener(request) {
     if(auto_play_suggestions && enableVoice) {
         let suggestions = $('#popup-'+request.index).find('.spellingSuggestion');
         if(suggestions.length > 0 ) {
-            ttsListener({toDo: "tts", toSay: generate_phrase(), option: voiceSelect});
+          ttsListener({toDo: "tts", toSay: generate_phrase(), option: voiceSelect});
             cur_playing_suggestions_id++;
             stop_playing_suggestions = false;
-            setTimeout(play_suggestions, 2500, suggestions, 0, cur_playing_suggestions_id);
+           setTimeout(play_suggestions, 2500, suggestions, 0, cur_playing_suggestions_id);
         }
     }
 };
@@ -473,7 +473,7 @@ function play_suggestions(suggestions, position, id) {
         $(suggestions[position-1]).parent().removeClass('button-glow');
         $(suggestions[position-1]).parent().removeClass('suggestionButtonAuto');
         if (enableImages === 1)
-            $(suggestions[position-1]).parent().next().removeClass('button-glow');
+           $(suggestions[position-1]).parent().next().removeClass('button-glow');
         $('.imgWindow').hide();
     }
     if(stop_playing_suggestions){
@@ -799,9 +799,9 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
 
 
 /* Text To Speech Listener */
-function ttsListener(request){
+async function ttsListener(request){
     if (request.option == "Justin" || request.option == "Ivy" || request.option == "Joanna") {
-        $.ajax({
+        await $.ajax({
             dataType: "json",
             type: "GET",
             url: "https://cast.boisestate.edu/extension/tts.php",
