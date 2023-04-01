@@ -17,8 +17,9 @@ if ('serviceWorker' in navigator) {
   }
 else {
     console.log('Service workers are not suppported');
-}
+     }
+  }
 }
 
-}
+document.addEventListener('DOMContentLoaded', SERVICE_WORKER_RESIGER.init);
   

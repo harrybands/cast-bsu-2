@@ -799,82 +799,77 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
 
 
 /* Text To Speech Listener */
-async function ttsListener(request){
-    if (request.option == "Justin" || request.option == "Ivy" || request.option == "Joanna") {
-        await $.ajax({
-            dataType: "json",
-            type: "GET",
-            url: "https://cast.boisestate.edu/extension/tts.php",
-            data: {
-                "speech": request.toSay,
-                "voice": request.option 
-            },
-            success: function(result) {
-                if(audio)
-                    audio.pause();
-                audio = new Audio();
-                audio.src = result;
-                audio.load();
-                audio.play();
-            },
-            error: function(xhr, textStatus, error) {
-                console.log("An error was encountered trying to speak!");
-                console.log(xhr.statusText);
-                console.log(textStatus);
-                console.log(JSON.stringify(error));
+async function ttsListener(request) {
+    if (request.option === "Justin" || request.option === "Ivy" || request.option === "Joanna") {
+        try {
+            const result = await $.ajax({
+                dataType: "json",
+                type: "GET",
+                url: "https://cast.boisestate.edu/extension/tts.php",
+                data: {
+                    "speech": request.toSay,
+                    "voice": request.option
+                }
+            });
+            if (audio) {
+                audio.pause();
             }
-        });
+            audio = new Audio();
+            audio.src = result;
+            audio.load();
+            audio.play();
+        } catch (error) {
+            console.log("An error was encountered trying to speak!");
+            console.log(error.statusText);
+            console.log(error.textStatus);
+            console.log(JSON.stringify(error.error));
+        }
     }
 };
 
 /* Image Search Listener - makes request for images to php server */
-function imageSearchListener(request) {
+async function imageSearchListener(request) {
     $(function() {
-        $.ajax({
-            dataType: "json",
-            type: "GET",
-            url: "https://cast.boisestate.edu/googleAPI/googleImages.php",
-            data: {
-                "keyword" : request.keyword
-            },
-            success: function(result) {
-                gotImageListener(
-                    {
-                        message: "success",
-                        query: request.keyword,
-                        result: result,
-                        eid: request.eid,
-                        newCache: request.newCache
+        (async function() {
+            try {
+                const result = await $.ajax({
+                    dataType: "json",
+                    type: "GET",
+                    url: "https://cast.boisestate.edu/googleAPI/googleImages.php",
+                    data: {
+                        "keyword": request.keyword
                     }
-                );
-            },
-            error: function(xhr, textStatus, error) {
-                gotImageListener(
-                    {
-                        todo: "gotImage",
-                        message: "error",
-                        xhr: xhr,
-                        textStatus: textStatus,
-                        error: error,
-                        newCache: request.newCache
-                    }
-                );
+                });
+                gotImageListener({
+                    message: "success",
+                    query: request.keyword,
+                    result: result,
+                    eid: request.eid,
+                    newCache: request.newCache
+                });
+            } catch (error) {
+                gotImageListener({
+                    todo: "gotImage",
+                    message: "error",
+                    error: error,
+                    newCache: request.newCache
+                });
             }
-        });
+        })();
     });
 };
 
 /* Once we got images from the server, this function puts them in their respective divs */
 function gotImageListener(request){
-    if (request.message == "success") {
-        var eid = request.eid;
-        var imageURL;
+    if ( request.message == "success") {
+        const eid = request.eid;
+        var imageURL = "";
         if (request.cacheImage)
             imageURL = request.result;
         else
             imageURL = request.result.items[0].image.thumbnailLink; //.link
 
-        var query = request.query;
+        const query = request.query;
         storage.setItem("spelling"-query,imageURL);
         $('.castSuggest-'+query).each(function() {
             console.log("attaching image");
