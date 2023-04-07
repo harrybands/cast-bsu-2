@@ -1,5 +1,3 @@
-
-
 self.addEventListener('install', (ev) => {
     console.log('installed');
 })
@@ -89,29 +87,3 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         sendResponse({uuid:uuid});
     }
 });
-
-// async function handleMessage(request, sender, sendResponse) {
-//     //displays icon
-//     if (request.todo == "showPageAction") {
-//     await chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//     chrome.action.sync(tabs[0].id);
-//     });
-//     } else if (request.todo == "getDictionary") {
-//     sendResponse({ dictionary: dictionary });
-//     } else if (request.todo == "getSuggestions") {
-//     await $.ajax({
-//     dataType: "json",
-//     type: "GET",
-//     url: "https://cast.boisestate.edu/nodeAPI/nodeSpellcheck.php",
-//     data: {
-//     splchk: true,
-//     word: request.word,
-//     },
-//     success: function (result) {
-//     console.log(result);
-//     },
-//     });
-//     } else if (request.todo == "getUUID") {
-//     sendResponse({ uuid: uuid });
-//     }
-//     };

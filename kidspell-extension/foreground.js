@@ -8,10 +8,13 @@ chrome.runtime.sendMessage({todo: "getDictionary"}, function(response) {
 });
 //helper function
 function dictionary_check(text){
-    if(dictionary[text.toUpperCase()]==true)
+    if(dictionary[text.toUpperCase()]==true) {
         return true;
+    }
     else
+    {
         return false;
+    }
 }
 
 //*** Get UUID  ****/
@@ -34,7 +37,7 @@ var content_phrases = ["did you mean one of these?", "how about these?", "maybe 
 var last_cue_phrase = -1; // Used to make sure we don't repeat phrases
 var last_content_phrase = -1; // Used to make sure we don't repeat phrases
 var dialogue_interruption = false; //used to detect if dialogue will be interrupted 
-var stop_playing_suggestions = false; //used to signal to stop playing usggestions
+var stop_playing_suggestions = false; //used to signal to stop playing suggestions
 var cur_playing_suggestions_id = 0;  //Makes the id of the popup that is curretnly playing suggestions
 var ignore_list = [];  //List of words to ignore, chosen by user
 //tracks last input box to track
@@ -43,19 +46,21 @@ var last_$node;
 var last_svg;
 var last_mirror;
 
+
 // Config Variables
-var small_window = true;    //config variable to make window smaller
-var button_audio = true;    // places clickable button to play audio on suggestions
-var enableVoice = 1;        // Config variable for Text-To-Speech
-var enableImages = 1;       // Config variable to use images on suggestions
-var auto_play_suggestions = true; // if true, automatically reads the suggestions out loud using TTS
-var autoPopup = true;
-var highlightDifference = {     // how to highlight the differences between spelling error and suggestions
+let small_window = true;    //config variable to make window smaller
+let button_audio = true;    // places clickable button to play audio on suggestions
+let enableVoice;        // Config variable for Text-To-Speech
+let enableImages;       // Config variable to use images on suggestions
+let auto_play_suggestions = true; // if true, automatically reads the suggestions out loud using TTS
+let autoPopup = true;
+let highlightDifference = {     // how to highlight the differences between spelling error and suggestions
     'highlightBackground' : true,
     'changeTextColor' : false,
     'underline' : false
 }
-var voiceSelect = "Joanna";     // TTS voice to use - options are Joanna, Ivy, or Justin
+let voiceSelect = "Joanna";     // TTS voice to use - options are Joanna, Ivy, or Justin
+
 
 /*** Getting saved user data for config varaibles */
 chrome.storage.sync.get(['enableVoice'], function(data){
@@ -409,10 +414,10 @@ function handleSpellingError(word_data){
     Note that we use async await here, instead of callback functions.
     We decided that async handling for suggestions would be best in order to avoid errors.
 */
-async function spellcheckListener(request) {
+function spellcheckListener(request) {
     let result;
      try {
-        result = await $.ajax({
+        result = $.ajax({
             dataType: "json",
             type: "GET",
             url: "https://cast.boisestate.edu/nodeAPI/nodeSpellcheck.php",
@@ -466,6 +471,9 @@ function createWindowListener(request) {
     }
 };
 
+function showImages() {
+    
+}
 
 /** function to auto-play sounds and images consecutivtely of a suggestion list */
 function play_suggestions(suggestions, position, id) {
@@ -510,7 +518,20 @@ function play_suggestions(suggestions, position, id) {
         setTimeout(play_suggestions, 1500, suggestions, position, id);
 }
 
+// /* Checkbox for automatic Popup function */
+// $(document).on('click', ) {
+//     stop_enable_popup = true; 
+// }
 
+// /* Checkbox on the enable voice function */
+// $(document).on('click', ) {
+//     stop_enable_voices = true; 
+// }
+
+// /* Checkbox on the enable pictures function */
+// $(document).on('click', ) {
+//     stop_enable_images = true; 
+// }
 
 /* Replaces the value in the text box with the corrected spelling */
 $(document).on('click', '.spellingSuggestion', function(data) {
@@ -572,6 +593,7 @@ $(document).on('click', '.spellingSuggestion', function(data) {
 
 
     
+    //remove popup
     //remove popup
     let wordIndex = this.getAttribute('index');
     var popup = document.getElementById("popup-"+wordIndex);
@@ -712,7 +734,7 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
             var div = document.createElement('div');
             div.classList = "spellingSuggestion";
             div.id = i;
-            div.setAttribute('index',wordIndex);
+            div.setAttribute('index',i);
     
             // Find difference and put in span 
             var diff = dmp.diff_main(selectedWord, item);
@@ -738,9 +760,9 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
                 $(div).append('<i class="fas fa-volume-up suggestion-speaker-button"></i>');
             
             //Image container and image
-            var imgWindow = document.createElement("div");
+            let imgWindow = document.createElement("div");
             imgWindow.classList.add("imgWindow");
-            var imagepic = document.createElement('img');
+            let imagepic = document.createElement('img');
             imagepic.classList.add("imgExpand");
             imgWindow.appendChild(imagepic);
 
@@ -799,10 +821,10 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
 
 
 /* Text To Speech Listener */
-async function ttsListener(request) {
+function ttsListener(request) {
     if (request.option === "Justin" || request.option === "Ivy" || request.option === "Joanna") {
         try {
-            const result = await $.ajax({
+            const result = $.ajax({
                 dataType: "json",
                 type: "GET",
                 url: "https://cast.boisestate.edu/extension/tts.php",
@@ -828,11 +850,11 @@ async function ttsListener(request) {
 };
 
 /* Image Search Listener - makes request for images to php server */
-async function imageSearchListener(request) {
+function imageSearchListener(request) {
     $(function() {
-        (async function() {
+        (function() {
             try {
-                const result = await $.ajax({
+                const result = $.ajax({
                     dataType: "json",
                     type: "GET",
                     url: "https://cast.boisestate.edu/googleAPI/googleImages.php",
