@@ -51,7 +51,8 @@ var last_mirror;
 let small_window = true;    //config variable to make window smaller
 let button_audio = true;    // places clickable button to play audio on suggestions
 let enableVoice;        // Config variable for Text-To-Speech
-let enableImages;       // Config variable to use images on suggestions
+let enablePictures;     // Config variable for Pictures 
+let enableImages = 1;       // Config variable to use images on suggestions
 let auto_play_suggestions = true; // if true, automatically reads the suggestions out loud using TTS
 let autoPopup = true;
 let highlightDifference = {     // how to highlight the differences between spelling error and suggestions
@@ -471,25 +472,24 @@ function createWindowListener(request) {
     }
 };
 
-function showImages() {
-    
-}
 
 /** function to auto-play sounds and images consecutivtely of a suggestion list */
 function play_suggestions(suggestions, position, id) {
     if(position > 0) {
         $(suggestions[position-1]).parent().removeClass('button-glow');
         $(suggestions[position-1]).parent().removeClass('suggestionButtonAuto');
-        if (enableImages === 1)
-           $(suggestions[position-1]).parent().next().removeClass('button-glow');
-        $('.imgWindow').hide();
+        if (enableImages === 1) {
+            $(suggestions[position-1]).parent().next().removeClass('button-glow');
+            $('.imgWindow').hide();
+        }
     }
     if(stop_playing_suggestions){
         $(suggestions[position]).parent().removeClass('button-glow');
         $(suggestions[position]).parent().removeClass('suggestionButtonAuto');
-        if (enableImages === 1)
+        if (enableImages === 1) {
             $(suggestions[position]).parent().next().removeClass('button-glow');
-        $('.imgWindow').hide();
+            $('.imgWindow').hide();
+        }
         stop_playing_suggestions = false;
         //$('html,body').animate({scrollTop: $('.kidspell').offset().top});
         return;
@@ -517,21 +517,6 @@ function play_suggestions(suggestions, position, id) {
     if(position <= suggestions.length)
         setTimeout(play_suggestions, 1500, suggestions, position, id);
 }
-
-// /* Checkbox for automatic Popup function */
-// $(document).on('click', ) {
-//     stop_enable_popup = true; 
-// }
-
-// /* Checkbox on the enable voice function */
-// $(document).on('click', ) {
-//     stop_enable_voices = true; 
-// }
-
-// /* Checkbox on the enable pictures function */
-// $(document).on('click', ) {
-//     stop_enable_images = true; 
-// }
 
 /* Replaces the value in the text box with the corrected spelling */
 $(document).on('click', '.spellingSuggestion', function(data) {
@@ -917,7 +902,7 @@ $(document).on('click', '.suggestion-speaker-button', function(clickData){
     var speech = $(this).parent().text()
     ttsListener({toDo: "tts", toSay: speech, option: voiceSelect});
     $(this).parent().parent().addClass('button-glow');
-    if(enableImages){
+    if(enableImages === 1){
         $(this).parent().parent().next().show();
         $(this).parent().parent().next().addClass('button-glow');
     }
@@ -925,7 +910,7 @@ $(document).on('click', '.suggestion-speaker-button', function(clickData){
     let that = $(this);
     setTimeout(function(that){
         that.parent().parent().removeClass('button-glow');
-        if(enableImages){
+        if(enableImages === 1){
             that.parent().parent().next().removeClass('button-glow');
         }
         that.parent().parent().next().hide();
