@@ -1,5 +1,5 @@
 //Activate Button on toolbar
-chrome.runtime.sendMessage({todo: "showPageAction"});
+chrome.runtime.sendMessage({todo: "showAction"});
 
 //*** SET UP DICTIONARY  ***/
 var dictionary = null;
@@ -50,6 +50,7 @@ var last_mirror;
 // Config Variables
 let small_window = true;    //config variable to make window smaller
 let button_audio = true;    // places clickable button to play audio on suggestions
+let button_image = true;  // places clickable button to play image on suggestions
 let enableVoice;        // Config variable for Text-To-Speech
 let enablePictures;     // Config variable for Pictures 
 let enableImages = 1;       // Config variable to use images on suggestions
@@ -478,7 +479,7 @@ function play_suggestions(suggestions, position, id) {
     if(position > 0) {
         $(suggestions[position-1]).parent().removeClass('button-glow');
         $(suggestions[position-1]).parent().removeClass('suggestionButtonAuto');
-        if (enableImages === 1) {
+        if (enableImages === 1  && enablePictures) {
             $(suggestions[position-1]).parent().next().removeClass('button-glow');
             $('.imgWindow').hide();
         }
@@ -486,7 +487,7 @@ function play_suggestions(suggestions, position, id) {
     if(stop_playing_suggestions){
         $(suggestions[position]).parent().removeClass('button-glow');
         $(suggestions[position]).parent().removeClass('suggestionButtonAuto');
-        if (enableImages === 1) {
+        if (enableImages === 1 && enablePictures) {
             $(suggestions[position]).parent().next().removeClass('button-glow');
             $('.imgWindow').hide();
         }
@@ -502,7 +503,7 @@ function play_suggestions(suggestions, position, id) {
         $(suggestions[position]).parent().addClass('button-glow');
         $(suggestions[position]).parent().addClass('suggestionButtonAuto');
         ttsListener({toDo: "tts", toSay: $(suggestions[position]).text(), option: voiceSelect});
-        if (enableImages === 1) {
+        if (enableImages === 1 && enablePictures) {
             $(suggestions[position]).parent().next().addClass('button-glow');
             $(suggestions[position]).parent().next().show();
         }
@@ -745,11 +746,14 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
                 $(div).append('<i class="fas fa-volume-up suggestion-speaker-button"></i>');
             
             //Image container and image
+            // if(button_image && enableImages === 1 && enablePictures) 
+            //{
             let imgWindow = document.createElement("div");
             imgWindow.classList.add("imgWindow");
             let imagepic = document.createElement('img');
             imagepic.classList.add("imgExpand");
             imgWindow.appendChild(imagepic);
+            //}
 
             // Append buttons to button container and finally to popup
             suggestButton.appendChild(div);
@@ -788,7 +792,7 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
 
     //Find images for suggestions
     arrayOfSuggestions.forEach(function(item, i) {
-        if (enableImages === 1) {
+        if (enableImages === 1 && enablePictures) {
             let cached = storage.getItem("spelling-"+item)
             if (cached == null) {
                 console.log("No cache, searching for image");
@@ -822,9 +826,11 @@ function ttsListener(request) {
                 audio.pause();
             }
             audio = new Audio();
-            audio.src = result;
-            audio.load();
-            audio.play();
+            result.done(audioSrc=>{
+                audio.src = audioSrc;
+                audio.load();
+                audio.play();
+            })
         } catch (error) {
             console.log("An error was encountered trying to speak!");
             console.log(error.statusText);
@@ -873,20 +879,34 @@ function gotImageListener(request){
         var imageURL = "";
         if (request.cacheImage)
             imageURL = request.result;
-        else
-            imageURL = request.result.items[0].image.thumbnailLink; //.link
+        else{
+            request.result.done(photo=>{    
+                imageURL = photo.items[0].image.thumbnailLink; //.link
+                const query = request.query;
+                storage.setItem("spelling"-query,imageURL);
+                $('.castSuggest-'+query).each(function() {
+                    console.log("attaching image");
+                    console.log("this:", $(this));
+                    $($(this).children()[1]).children()[0].src=imageURL;
+                });
+        
+                if (typeof callDBA === 'function'){
+                    callDBA("insertSuggestionUrl", [eid, query, imageURL]);
+                }
+            })
+        }
+    //     const query = request.query;
+    //     storage.setItem("spelling"-query,imageURL);
+    //     $('.castSuggest-'+query).each(function() {
+    //         console.log("attaching image");
+    //         console.log("this:", $(this));
+    //         $($(this).children()[1]).children()[0].src=imageURL;
+    //     });
 
-        const query = request.query;
-        storage.setItem("spelling"-query,imageURL);
-        $('.castSuggest-'+query).each(function() {
-            console.log("attaching image");
-            console.log("this:", $(this));
-            $($(this).children()[1]).children()[0].src=imageURL;
-        });
-
-        if (typeof callDBA === 'function')
-            callDBA("insertSuggestionUrl", [eid, query, imageURL]);
-    }
+    //     if (typeof callDBA === 'function'){
+    //         callDBA("insertSuggestionUrl", [eid, query, imageURL]);
+    //     }
+     }
     else {
         console.log("FAILURE: IMAGE COULD NOT BE RETRIEVED");
         console.log(request.xhr.statusText);
@@ -902,7 +922,7 @@ $(document).on('click', '.suggestion-speaker-button', function(clickData){
     var speech = $(this).parent().text()
     ttsListener({toDo: "tts", toSay: speech, option: voiceSelect});
     $(this).parent().parent().addClass('button-glow');
-    if(enableImages === 1){
+    if(enableImages === 1 && enablePictures){
         $(this).parent().parent().next().show();
         $(this).parent().parent().next().addClass('button-glow');
     }
@@ -910,7 +930,7 @@ $(document).on('click', '.suggestion-speaker-button', function(clickData){
     let that = $(this);
     setTimeout(function(that){
         that.parent().parent().removeClass('button-glow');
-        if(enableImages === 1){
+        if(enableImages === 1 && enablePictures){
             that.parent().parent().next().removeClass('button-glow');
         }
         that.parent().parent().next().hide();

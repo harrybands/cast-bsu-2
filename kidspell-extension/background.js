@@ -56,12 +56,11 @@ function uuidv4() {
     )
 }
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-    /*displays icon*/
-    if (request.todo == "showPageAction") {
-        chrome.tabs.query({active:true, currentWindow:true}, function(tabs){
-            chrome.action.sync(tabs[0].id);
-        });
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.todo === 'showAction') {
+      chrome.action.enable(sender.tabs[0].id);
+    } else if (request.todo === 'hideAction') {
+      chrome.action.disable(sender.tabs[0].id);
     }
 
     else if (request.todo == "getDictionary") {
