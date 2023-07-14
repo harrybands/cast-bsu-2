@@ -462,10 +462,15 @@ function createWindowListener(request) {
     $('#popup-'+request.index).css({top:topOffset});
 
     // automatically read the suggestions
-    if((auto_play_suggestions && enableVoice) || (auto_play_suggestions && enableImages === 1)) {
+    if(auto_play_suggestions) {
         let suggestions = $('#popup-'+request.index).find('.spellingSuggestion');
-        if(suggestions.length > 0 ) {
+        if(suggestions.length > 0  && enableVoice) {
           ttsListener({toDo: "tts", toSay: generate_phrase(), option: voiceSelect});
+            cur_playing_suggestions_id++;
+            stop_playing_suggestions = false;
+           setTimeout(play_suggestions, 2500, suggestions, 0, cur_playing_suggestions_id);
+        }
+        if(suggestions.length > 0) {
             cur_playing_suggestions_id++;
             stop_playing_suggestions = false;
            setTimeout(play_suggestions, 2500, suggestions, 0, cur_playing_suggestions_id);
@@ -744,6 +749,10 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
             });
             if(button_audio && enableVoice)
                 $(div).append('<i class="fas fa-volume-up suggestion-speaker-button"></i>');
+
+            if(!button_audio) {
+                enableVoice = false;
+            }
             
             //Image container and image
             // if(button_image && enableImages === 1 && enablePictures) 
