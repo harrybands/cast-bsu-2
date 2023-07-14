@@ -462,7 +462,7 @@ function createWindowListener(request) {
     $('#popup-'+request.index).css({top:topOffset});
 
     // automatically read the suggestions
-    if(auto_play_suggestions && enableVoice) {
+    if((auto_play_suggestions && enableVoice) || (auto_play_suggestions && enableImages === 1)) {
         let suggestions = $('#popup-'+request.index).find('.spellingSuggestion');
         if(suggestions.length > 0 ) {
           ttsListener({toDo: "tts", toSay: generate_phrase(), option: voiceSelect});
