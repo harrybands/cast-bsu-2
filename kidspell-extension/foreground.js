@@ -89,6 +89,10 @@ chrome.storage.sync.get(['autoRead'], function(data){
 });
 
 
+if (enableVoice == null) {
+    autoRead = false;
+}
+
 // CSS to copy
 var css_to_copy = ['border',
             //'margin',
@@ -470,7 +474,7 @@ function createWindowListener(request) {
             stop_playing_suggestions = false;
            setTimeout(play_suggestions, 2500, suggestions, 0, cur_playing_suggestions_id);
         }
-        if(suggestions.length > 0) {
+        if(suggestions.length > 0 && !enableVoice) {
             cur_playing_suggestions_id++;
             stop_playing_suggestions = false;
            setTimeout(play_suggestions, 2500, suggestions, 0, cur_playing_suggestions_id);
@@ -503,7 +507,7 @@ function play_suggestions(suggestions, position, id) {
     if(id!=cur_playing_suggestions_id) {
         return;
     }
-    if(position < suggestions.length) {
+    if(position < suggestions.length && enableVoice) {
         //$('html,body').animate({scrollTop: $(suggestions[position]).parent().offset().top - window.innerHeight*.60});
         $(suggestions[position]).parent().addClass('button-glow');
         $(suggestions[position]).parent().addClass('suggestionButtonAuto');
@@ -512,7 +516,18 @@ function play_suggestions(suggestions, position, id) {
             $(suggestions[position]).parent().next().addClass('button-glow');
             $(suggestions[position]).parent().next().show();
         }
-    } else 
+    }
+    if (position < suggestions.length && !enableVoice){
+            //$('html,body').animate({scrollTop: $(suggestions[position]).parent().offset().top - window.innerHeight*.60});
+            $(suggestions[position]).parent().addClass('button-glow');
+            $(suggestions[position]).parent().addClass('suggestionButtonAuto');
+            //ttsListener({toDo: "tts", toSay: $(suggestions[position]).text(), option: voiceSelect});
+            if (enableImages === 1 && enablePictures) {
+                $(suggestions[position]).parent().next().addClass('button-glow');
+                $(suggestions[position]).parent().next().show();
+            }
+    }
+     else 
     {
         // Should scroll to last input
         //$('html,body').animate({scrollTop: $('.kidspell').offset().top});
@@ -929,7 +944,7 @@ $(document).on('click', '.suggestion-speaker-button', function(clickData){
     //TO-DO: record event
     console.log('entering click');
     var speech = $(this).parent().text()
-    ttsListener({toDo: "tts", toSay: speech, option: voiceSelect});
+   // ttsListener({toDo: "tts", toSay: speech, option: voiceSelect});
     $(this).parent().parent().addClass('button-glow');
     if(enableImages === 1 && enablePictures){
         $(this).parent().parent().next().show();
