@@ -1,43 +1,43 @@
 {
-    "name": "CAST Spell Checker",
-    "version": "1.0.0",
-    "description": "Spell checker for children",
-    "manifest_version": 3,
-    "author": "CAST team",
-    "icons": {
-        "128": "icon128.png",
-        "48": "icon48.png",
-        "32": "icon32.png",
-        "16": "icon16.png"
-    }
+  "name": "CAST Spell Checker",
+  "version": "1.0.0",
+  "description": "Spell checker for children",
+  "manifest_version": 3,
+  "author": "CAST team",
+  "icons": {
+      "128": "icon128.png",
+      "48": "icon48.png",
+      "32": "icon32.png",
+      "16": "icon16.png"
+  }
 ,
 
 "page_action": {
-    "default_icon": "icon16.png",
-    "default_popup": "popup.html",
-    "default_title": "CASTSpellChecker"
-  },
+  "default_icon": "icon16.png",
+  "default_popup": "popup.html",
+  "default_title": "CASTSpellChecker"
+},
 
 "background": {
-    "service_worker": ["jquery-3.6.4.min/index.js","typo/typo.js","eventPage.js"]
+  "service_worker": ["jquery-3.6.4.min/index.js","typo/typo.js","eventPage.js"]
 },
 
 "content_scripts":[
-    {
-      "matches": ["<all_urls>"],
-      "js": ["jquery-3.6.4.min.js", "content.js"],
-      "css": ["content.css"]
-    }
+  {
+    "matches": ["<all_urls>"],
+    "js": ["jquery-3.6.4.min.js", "content.js"],
+    "css": ["content.css"]
+  }
 ],
 
 "permissions": [
-    "tabs",
-    "contextMenus",
-    "tts",
-    "storage"
-  ],
+  "tabs",
+  "contextMenus",
+  "tts",
+  "storage"
+],
 
-  "web_accessible_resources": [
-    "speakIcon.png"
-  ]
+"web_accessible_resources": [
+  "speakIcon.png"
+]
 }

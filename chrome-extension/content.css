@@ -1,0 +1,131 @@
+.intro {
+    font-weight: bold;
+    color: blue;
+}
+
+#myPopup {
+    height: auto;
+    width: 240px;
+    position: absolute;
+    background-color: white;
+    display: block;
+    /*
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    */
+    border-radius: 2%;
+    z-index: 9999; /*brings to front */
+    box-shadow: 0 0 1px 1px #999999;
+    line-height: 2em;
+}
+
+#myPopupTitle {
+    text-align: left;
+    font-weight: bold;
+    font-size: 16px;
+    color: black;
+    margin: 5px;
+    font-family: "Open Sans", Arial, Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.contentButton {
+    margin: 5px;
+    display: flex;
+    height: 35px;
+}
+
+#misButton {
+    transition: background-color 0.2s ease-in-out;
+    background-color: #ffca8e;
+    border-style: none none solid none;
+    border-width: 2px;
+    border-color: #ffbc6f;
+    border-radius: 5px;
+    width: 100%;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#misButton:hover {
+    background-color: #ffbc6f;
+    cursor: pointer;
+}
+
+#myPopupWord {
+    font-size: 16px;
+    padding: 5px;
+    color: #333333;
+}
+
+.suggestButton {
+    transition: background-color 0.2s ease-in-out;
+    background-color: #9bff9b;
+    border-style: none none solid none;
+    border-width: 2px;
+    border-color: #65e965;
+    border-radius: 5px;
+    width: 100%;
+    display: flex;
+    vertical-align: middle;
+}
+
+.suggestButton:hover {
+    background-color: #65e965;
+    cursor: pointer;
+}
+
+.spellingSuggestion {
+    font-size: 16px;
+    padding: 5px;
+    color: #333333;
+    width: 100%;
+}
+
+.contentButton img {
+    width: 20%;
+    height: 100%;
+    display: none;
+    border-radius: 5px 5px 5px 5px;
+    /*border-style: none none solid none;
+    border-color: black;*/
+}
+
+.CAST_colorText {
+    color: #409bff;
+}
+
+.CAST_highlightBackground {
+    background-color: #f4ff37;
+}
+
+.CAST_underline {
+    text-decoration-line: underline;
+}
+
+
+/*
+#ttsButton {
+    background-color: #ececec;
+    transition: background-color 0.2s ease-in-out;
+    width: 20%;
+    text-align: center;
+    border-style: none none solid none;
+    border-width: 2px;
+    border-color: #d4d4d4;
+    border-radius: 0px 5px 5px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#ttsButton:hover {
+    background-color: #d4d4d4;
+    cursor: pointer;
+}
+
+#ttsIcon {
+    max-width: 25px;
+    max-height: 25px;
+}
+*/
