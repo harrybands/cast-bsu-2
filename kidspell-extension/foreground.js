@@ -854,6 +854,7 @@ function ttsListener(request) {
                 audio.src = audioSrc;
                 audio.load();
                 audio.play();
+                console.log("Playing audio");
             })
         } catch (error) {
             console.log("An error was encountered trying to speak!");
@@ -944,7 +945,7 @@ $(document).on('click', '.suggestion-speaker-button', function(clickData){
     //TO-DO: record event
     console.log('entering click');
     var speech = $(this).parent().text()
-   // ttsListener({toDo: "tts", toSay: speech, option: voiceSelect});
+    ttsListener({toDo: "tts", toSay: speech, option: voiceSelect});
     $(this).parent().parent().addClass('button-glow');
     if(enableImages === 1 && enablePictures){
         $(this).parent().parent().next().show();
