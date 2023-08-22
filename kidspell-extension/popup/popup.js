@@ -1,3 +1,8 @@
+let closeButton = document.getElementById("closeButton");
+    $("#closeButton").click(function(){
+        window.close();
+    });
+
 let enableVoice;
 chrome.storage.sync.get(['enableVoice'], function(data){
     if(data.enableVoice != null) {

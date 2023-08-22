@@ -88,11 +88,6 @@ chrome.storage.sync.get(['autoRead'], function(data){
     }
 });
 
-
-if (enableVoice == null) {
-    autoRead = false;
-}
-
 // CSS to copy
 var css_to_copy = ['border',
             //'margin',
@@ -488,16 +483,18 @@ function play_suggestions(suggestions, position, id) {
     if(position > 0) {
         $(suggestions[position-1]).parent().removeClass('button-glow');
         $(suggestions[position-1]).parent().removeClass('suggestionButtonAuto');
-        if (enableImages === 1  && enablePictures) {
+        if (enableImages === 1  && enablePictures && button_image) {
             $(suggestions[position-1]).parent().next().removeClass('button-glow');
+            $(suggestions[position-1]).parent().removeClass('suggestionButtonAuto');
             $('.imgWindow').hide();
         }
     }
     if(stop_playing_suggestions){
         $(suggestions[position]).parent().removeClass('button-glow');
         $(suggestions[position]).parent().removeClass('suggestionButtonAuto');
-        if (enableImages === 1 && enablePictures) {
+        if (enableImages === 1 && enablePictures && button_image) {
             $(suggestions[position]).parent().next().removeClass('button-glow');
+           // $(suggestions[position]).parent().next().removeClass('suggestionButtonAuto');
             $('.imgWindow').hide();
         }
         stop_playing_suggestions = false;
@@ -512,8 +509,9 @@ function play_suggestions(suggestions, position, id) {
         $(suggestions[position]).parent().addClass('button-glow');
         $(suggestions[position]).parent().addClass('suggestionButtonAuto');
         ttsListener({toDo: "tts", toSay: $(suggestions[position]).text(), option: voiceSelect});
-        if (enableImages === 1 && enablePictures) {
+        if (enableImages === 1 && enablePictures && button_image) {
             $(suggestions[position]).parent().next().addClass('button-glow');
+        //    $(suggestions[position]).parent().next().addClass('suggestionButtonAuto');
             $(suggestions[position]).parent().next().show();
         }
     }
@@ -522,8 +520,9 @@ function play_suggestions(suggestions, position, id) {
             $(suggestions[position]).parent().addClass('button-glow');
             $(suggestions[position]).parent().addClass('suggestionButtonAuto');
             //ttsListener({toDo: "tts", toSay: $(suggestions[position]).text(), option: voiceSelect});
-            if (enableImages === 1 && enablePictures) {
+            if (enableImages === 1 && enablePictures && button_image) {
                 $(suggestions[position]).parent().next().addClass('button-glow');
+                $(suggestions[position]).parent().next().addClass('suggestionButtonAuto');
                 $(suggestions[position]).parent().next().show();
             }
     }
@@ -545,6 +544,8 @@ $(document).on('click', '.spellingSuggestion', function(data) {
 
     //if the click was on the inner speaker button, don't do anything
     if (data.target.classList.contains('suggestion-speaker-button'))
+        return;
+    if (data.target.classList.contains('suggestion-image-button'))
         return;
 
     //Chanve value of input
@@ -598,8 +599,6 @@ $(document).on('click', '.spellingSuggestion', function(data) {
     //setCurrentCursorPosition(currentFocus.innerText.length);
 
 
-    
-    //remove popup
     //remove popup
     let wordIndex = this.getAttribute('index');
     var popup = document.getElementById("popup-"+wordIndex);
@@ -617,6 +616,8 @@ $(document).on('click', '#myPopupWord, #closeButton', function(data){
     stop_playing_suggestions = true;
 
     if (data.target.classList.contains('suggestion-speaker-button'))
+        return;
+    if (data.target.classList.contains('suggestion-image-button'))
         return;
 
     //add to list of "correctly" spelled words
@@ -692,8 +693,12 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
     var wordNode = document.createTextNode(selectedWord);
     word.setAttribute('index',wordIndex);
     word.setAttribute('spelling', selectedWord);
-    if(button_audio && enableVoice)
+    if(button_audio && enableVoice) {
         $(word).append('<i class="fas fa-volume-up suggestion-speaker-button"></i>');
+    }
+        if(button_image && enableImages === 1 && enablePictures) {
+        $(word).append('<i class="fas fa-image suggestion-image-button"></i>');
+    }
 
     word.appendChild(wordNode);
     let misButton = document.createElement('div');
@@ -762,16 +767,14 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
                         spanNode.classList.add('CAST_underline');
                 }
             });
-            if(button_audio && enableVoice)
+            if(button_audio && enableVoice) {
                 $(div).append('<i class="fas fa-volume-up suggestion-speaker-button"></i>');
-
-            if(!button_audio) {
-                enableVoice = false;
             }
-            
-            //Image container and image
-            // if(button_image && enableImages === 1 && enablePictures) 
-            //{
+        // image button
+            if(button_image && enablePictures && enableImages === 1) {
+                $(div).append('<i class="fas fa-image suggestion-image-button"></i>');
+            }
+
             let imgWindow = document.createElement("div");
             imgWindow.classList.add("imgWindow");
             let imagepic = document.createElement('img');
@@ -816,7 +819,7 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
 
     //Find images for suggestions
     arrayOfSuggestions.forEach(function(item, i) {
-        if (enableImages === 1 && enablePictures) {
+        if (enableImages === 1 && enablePictures && button_image) {
             let cached = storage.getItem("spelling-"+item)
             if (cached == null) {
                 console.log("No cache, searching for image");
@@ -940,14 +943,35 @@ function gotImageListener(request){
     }
 };
 
+// Handles clicks on the suggestion image button - to display the images
+$(document).on('click', '.suggestion-image-button', function(clickData){
+    console.log('image button clicked');
+
+let that = $(this);
+    setTimeout(function(that){
+
+    let imgWindow = document.createElement("div");
+    imgWindow.classList.add("imgWindow");
+    let imagepic = document.createElement('img');
+    imagepic.classList.add("imgExpand");
+    imgWindow.appendChild(imagepic);
+
+        // that.parent().parent().removeClass('button-glow');
+        // if(enableImages === 1 && enablePictures && button_image){
+        //     that.parent().parent().next().removeClass('button-glow');
+        // }
+        // that.parent().parent().next().hide();
+    },1500, that);
+});
+
 // Handles clicks on the suggestion speaker button - to read words aloud
-$(document).on('click', '.suggestion-speaker-button', function(clickData){
+$(document).on('click', '.suggestion-speaker-button', '.suggestion-image-button', function(clickData){
     //TO-DO: record event
     console.log('entering click');
     var speech = $(this).parent().text()
     ttsListener({toDo: "tts", toSay: speech, option: voiceSelect});
     $(this).parent().parent().addClass('button-glow');
-    if(enableImages === 1 && enablePictures){
+    if(enableImages === 1 && enablePictures && button_image){
         $(this).parent().parent().next().show();
         $(this).parent().parent().next().addClass('button-glow');
     }
@@ -955,7 +979,7 @@ $(document).on('click', '.suggestion-speaker-button', function(clickData){
     let that = $(this);
     setTimeout(function(that){
         that.parent().parent().removeClass('button-glow');
-        if(enableImages === 1 && enablePictures){
+        if(enableImages === 1 && enablePictures && button_image){
             that.parent().parent().next().removeClass('button-glow');
         }
         that.parent().parent().next().hide();
