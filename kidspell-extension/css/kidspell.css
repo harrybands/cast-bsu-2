@@ -1,3 +1,7 @@
+* {
+box-sizing: border-box;
+}
+
 .wrapWord {
 	/*font-weight: bold; */
 	color: red;
@@ -55,15 +59,12 @@
 }
 
 .contentButton {
-	margin: 5px;
 	display: flex;
-	height: 35px;
 	font-size: 16px;
 	position: relative;
-}
+	justify-content: space-between;
+	height: 100%;
 
-.popup-small .contentButton {
-	height:28px;
 }
 
 .smallText {
@@ -104,6 +105,7 @@
 	width: 100%;
 	display: flex;
 	vertical-align: middle;
+	height: 100%;
 }
 
 .suggestButton:hover {
@@ -116,10 +118,12 @@
 }
 
 .spellingSuggestion {
-	padding: 1px;
-	padding-left:5px;
+	padding: 2px;
 	color: #333333;
 	width: 100%;
+	display: flex;
+	align-items: center;
+	height: 100%;
 }
 
 .imgWindow {
@@ -146,6 +150,7 @@
 
 .contentWrapper {
 	display: flex;
+	padding: 5px;
 }
 
 /*** This is for drawing circles ***/
@@ -168,37 +173,25 @@
 /*** end of circle drawing ***/
 
 .suggestion-speaker-button {
-	position:absolute;
-	right:0;
-	top:50%;
-	transform:translateY(-50%);
-	padding: 3.5%;
-	right: 0%;
+
 	background-color: white;
 	border-radius: 5px;
 	color: #409bff;
-	box-shadow: 0px 0px 5px 1px #888888;
+	order: 2;
+	padding:5px;
 }
 
 .suggestion-image-button {
-	position: absolute; 
-	right: 0; 
-	top: 50%; 
-	transform:translateY(-50%);
-	padding: 3.5%;
-	right: 0%;
+
 	background-color: white;
 	border-radius: 5px;
 	color: #409bff;
-	box-shadow: 0px 0px 5px 1px #888888;
+	order:3;
+	margin-left:5px;
+	padding:5px;
 }
 
 .kidspell-close-button {
-	position:absolute;
-	left:0;
-	top:50%;
-	transform:translateY(-50%);
-	padding: 3.5%;
 	border-radius: 5px;
 	color: red;
 	font-size:25px;
@@ -215,3 +208,21 @@
 .kidspell-mirror::-webkit-scrollbar {
 	display: none;
   }
+
+  .spelling-text-container{
+	flex-grow: 1;
+	
+  }
+  .leftWrapper{
+	display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  #closeButton{
+	display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+}
+  
