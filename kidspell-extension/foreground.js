@@ -683,16 +683,24 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
     var wrapper = document.createElement('div');
     wrapper.classList.add("contentWrapper");
     var leftwrapper = document.createElement('div');
+    leftwrapper.classList.add("leftWrapper");
     leftwrapper.style = "width: 100%;";
 
     // Create and append mispelled word button
     var word = document.createElement('div');
     word.id = "myPopupWord";
-    if (selectedWord.length > 25)
-        word.classList.add("smallText");
-    var wordNode = document.createTextNode(selectedWord);
+    word.classList.add("contentButton");
+    if (selectedWord.length > 25){
+    word.classList.add("smallText");
+    }
+    const spellingTextContainer = document.createElement('span');
+    spellingTextContainer.innerText  = selectedWord
+    spellingTextContainer.classList.add('spelling-text-container')
+    
+    var wordNode = spellingTextContainer;
     word.setAttribute('index',wordIndex);
     word.setAttribute('spelling', selectedWord);
+
     if(button_audio && enableVoice) {
         $(word).append('<i class="fas fa-volume-up suggestion-speaker-button"></i>');
     }
@@ -740,8 +748,9 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
             // First sub-button: the suggested word
             var suggestButton = document.createElement('div');
             suggestButton.classList.add("suggestButton");
-            if (item.length > 20)
+            if (item.length > 20){
                 suggestButton.classList.add("smallText");
+            }
             var div = document.createElement('div');
             div.classList = "spellingSuggestion";
             div.id = i;
@@ -750,23 +759,33 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
             // Find difference and put in span 
             var diff = dmp.diff_main(selectedWord, item);
             dmp.diff_cleanupSemantic(diff);
+            const spelledWord = parseArray(diff);
+            
+            var spanNode = document.createElement('span');
+            spanNode.classList.add('spelling-text-container');
+            var textNode = document.createTextNode(spelledWord)
+            spanNode.appendChild(textNode);
+            div.appendChild(spanNode);
+            
             diff.forEach(function(substr) {
+          
                 if (substr[0] == 0) {
-                    var textNode = document.createTextNode(substr[1]);
-                    div.appendChild(textNode);
+                    // var textNode = document.createTextNode(substr[1]);
+                    // spanNode.appendChild(textNode);
+
                 } else if (substr[0] == 1) {
-                    var spanNode = document.createElement('span');
-                    spanNode.appendChild(document.createTextNode(substr[1]));
-                    //spanNode.classList.add('CAST_correctDiff');
-                    div.appendChild(spanNode);
-                    if(highlightDifference['changeTextColor'])
-                        spanNode.classList.add('CAST_colorText');
-                    if(highlightDifference['highlightBackground'])
-                        spanNode.classList.add('CAST_highlightBackground');
-                    if(highlightDifference['underline'])
-                        spanNode.classList.add('CAST_underline');
+                    // spanNode.appendChild(document.createTextNode(substr[1]));
+                    // //spanNode.classList.add('CAST_correctDiff');
+                    // div.appendChild(spanNode);
+                    // if(highlightDifference['changeTextColor'])
+                    //     spanNode.classList.add('CAST_colorText');
+                    // if(highlightDifference['highlightBackground'])
+                    //     spanNode.classList.add('CAST_highlightBackground');
+                    // if(highlightDifference['underline'])
+                    //     spanNode.classList.add('CAST_underline');
                 }
             });
+
             if(button_audio && enableVoice) {
                 $(div).append('<i class="fas fa-volume-up suggestion-speaker-button"></i>');
             }
@@ -799,7 +818,6 @@ function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
         button.setAttribute('spelling', selectedWord);
         
         $(button).append('<i class="fas fa-times kidspell-close-button"</i>');
-        $(button).css("padding-left","32px");
         button.appendChild(wordNode);
         
         misButton = document.createElement('div');
@@ -985,3 +1003,10 @@ $(document).on('click', '.suggestion-speaker-button', '.suggestion-image-button'
         that.parent().parent().next().hide();
     },1500, that);
 });
+
+
+
+const parseArray =(arr)=>{
+return  arr.filter(subStr => subStr[0]>=0).map(subStr=>subStr[1]).join("")
+ 
+}
