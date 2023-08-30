@@ -438,8 +438,10 @@ function createWindowListener(request) {
     console.log('in createwindowlistener');
 
     //creates window
-    let popup = createWindow(request.selectedWord, request.arrayOfSuggestions, request.eid, request.index);
-    if(popup==null) return;
+    let popup = createPopup(request.selectedWord, request.arrayOfSuggestions, request.eid, request.index);
+    if(popup==null) {
+        return
+    };
     let rects = request.rects;
 
     //rectsx = rects.x - ($('.kidspell-mirror').scrollLeft() - current_spelling_errors[i].scrollX)
@@ -462,17 +464,18 @@ function createWindowListener(request) {
 
     // automatically read the suggestions
     if(auto_play_suggestions) {
+        const AUTO_PLAY_RATE = 2500;
         let suggestions = $('#popup-'+request.index).find('.spellingSuggestion');
         if(suggestions.length > 0  && enableVoice) {
           ttsListener({toDo: "tts", toSay: generate_phrase(), option: voiceSelect});
             cur_playing_suggestions_id++;
             stop_playing_suggestions = false;
-           setTimeout(play_suggestions, 2500, suggestions, 0, cur_playing_suggestions_id);
+           setTimeout(play_suggestions, AUTO_PLAY_RATE, suggestions, 0, cur_playing_suggestions_id);
         }
         if(suggestions.length > 0 && !enableVoice) {
             cur_playing_suggestions_id++;
             stop_playing_suggestions = false;
-           setTimeout(play_suggestions, 2500, suggestions, 0, cur_playing_suggestions_id);
+           setTimeout(play_suggestions, AUTO_PLAY_RATE, suggestions, 0, cur_playing_suggestions_id);
         }
     }
 };
@@ -519,8 +522,7 @@ function play_suggestions(suggestions, position, id) {
             //$('html,body').animate({scrollTop: $(suggestions[position]).parent().offset().top - window.innerHeight*.60});
             $(suggestions[position]).parent().addClass('button-glow');
             $(suggestions[position]).parent().addClass('suggestionButtonAuto');
-            //ttsListener({toDo: "tts", toSay: $(suggestions[position]).text(), option: voiceSelect});
-            if (enableImages === 1 && enablePictures && button_image) {
+             if (enableImages === 1 && enablePictures && button_image) {
                 $(suggestions[position]).parent().next().addClass('button-glow');
                 $(suggestions[position]).parent().next().addClass('suggestionButtonAuto');
                 $(suggestions[position]).parent().next().show();
@@ -528,8 +530,6 @@ function play_suggestions(suggestions, position, id) {
     }
      else 
     {
-        // Should scroll to last input
-        //$('html,body').animate({scrollTop: $('.kidspell').offset().top});
         dialogue_interruption = false;
     }
 
@@ -543,10 +543,12 @@ $(document).on('click', '.spellingSuggestion', function(data) {
     stop_playing_suggestions = true;
 
     //if the click was on the inner speaker button, don't do anything
-    if (data.target.classList.contains('suggestion-speaker-button'))
+    if (data.target.classList.contains('suggestion-speaker-button'))    {
         return;
-    if (data.target.classList.contains('suggestion-image-button'))
+    }
+        if (data.target.classList.contains('suggestion-image-button'))  {
         return;
+    }   
 
     //Chanve value of input
     let error = this.parentNode.parentNode.parentNode.childNodes[0].innerText;
@@ -596,8 +598,6 @@ $(document).on('click', '.spellingSuggestion', function(data) {
     if (typeof callDBA === 'function'){
         callDBA('insertEvent',[16, "input-parsed", log_info, qid]);
     }
-    //setCurrentCursorPosition(currentFocus.innerText.length);
-
 
     //remove popup
     let wordIndex = this.getAttribute('index');
@@ -662,8 +662,8 @@ function generate_phrase(){
     return to_say;
 }
 
-/* createWindow: Constructs the spellchecker popup */
-function createWindow(selectedWord, arrayOfSuggestions, eid, wordIndex) {
+/* createPopup: Constructs the spellchecker popup */
+function createPopup(selectedWord, arrayOfSuggestions, eid, wordIndex) {
     // Destroy existing spellchecker if necessary
     if($('#popup-'+wordIndex).length) {
         var popup = document.getElementById("popup-"+wordIndex);
@@ -964,42 +964,34 @@ function gotImageListener(request){
 // Handles clicks on the suggestion image button - to display the images
 $(document).on('click', '.suggestion-image-button', function(clickData){
     console.log('image button clicked');
-
-let that = $(this);
-    setTimeout(function(that){
-
+    
     let imgWindow = document.createElement("div");
     imgWindow.classList.add("imgWindow");
     let imagepic = document.createElement('img');
     imagepic.classList.add("imgExpand");
     imgWindow.appendChild(imagepic);
 
-        // that.parent().parent().removeClass('button-glow');
-        // if(enableImages === 1 && enablePictures && button_image){
-        //     that.parent().parent().next().removeClass('button-glow');
-        // }
-        // that.parent().parent().next().hide();
+    $(this).parent().parent().next().show();
+    $(this).parent().parent().next().addClass('button-glow');
+
+let that = $(this);
+    setTimeout(function(that){
+        that.parent().parent().next().removeClass('button-glow');
+        that.parent().parent().next().hide();
     },1500, that);
 });
 
 // Handles clicks on the suggestion speaker button - to read words aloud
-$(document).on('click', '.suggestion-speaker-button', '.suggestion-image-button', function(clickData){
+$(document).on('click', '.suggestion-speaker-button', function(clickData){
     //TO-DO: record event
     console.log('entering click');
     var speech = $(this).parent().text()
     ttsListener({toDo: "tts", toSay: speech, option: voiceSelect});
     $(this).parent().parent().addClass('button-glow');
-    if(enableImages === 1 && enablePictures && button_image){
-        $(this).parent().parent().next().show();
-        $(this).parent().parent().next().addClass('button-glow');
-    }
 
     let that = $(this);
     setTimeout(function(that){
         that.parent().parent().removeClass('button-glow');
-        if(enableImages === 1 && enablePictures && button_image){
-            that.parent().parent().next().removeClass('button-glow');
-        }
         that.parent().parent().next().hide();
     },1500, that);
 });
