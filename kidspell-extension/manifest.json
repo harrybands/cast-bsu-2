@@ -3,9 +3,12 @@
     "description": "An application to help kids with spelling! Developed by the CAST team at Boise State University.",
     "version": "1.0",
     "manifest_version": 3,
+    "minimum_chrome_version": "116",
     "background": {
-        "service_worker": "background.js"
-     },
+        "service_worker": "background.js",
+        "type": "module"
+     }, 
+    "_legacyUndefinedCheck": true,
     "icons": {
         "16": "./images/icon16.png",
         "32": "./images/icon32.png",
@@ -45,11 +48,19 @@
             "https://www.google.com/*", 
             "https://www.bing.com/*"]
     }],
-
     "options_page": "./options/options.html",
     "permissions": [
         "storage",
         "scripting",
-        "declarativeNetRequest"
-    ]
+        "declarativeNetRequest",
+        "tabs",
+        "activeTab",
+        "identity",
+        "windows",
+        "alarms"
+    ],
+    "externally_connectable": {
+        "matches": ["*://*.google.com/*",
+                    "*://*.bing.com/*"]
+    }
 }

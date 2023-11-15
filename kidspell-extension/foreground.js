@@ -1,18 +1,24 @@
 //Activate Button on toolbar
 chrome.runtime.sendMessage({todo: "showAction"});
 
+let dictionary = {};
+  fetch('dictionary.txt')
+  .then(response => response.text())
+  .then(text => set_up_dictionary(text))
+
 //*** SET UP DICTIONARY  ***/
-var dictionary = null;
-chrome.runtime.sendMessage({todo: "getDictionary"}, function(response) {
-    dictionary = response.dictionary;
-});
+// let dictionary = null;
+// chrome.runtime.sendMessage({todo: "getDictionary"}, function(response) {
+//     dictionary = response.dictionary;
+//     console.log(dictionary);
+// });
+
+
 //helper function
 function dictionary_check(text){
-    if(dictionary[text.toUpperCase()]==true) {
+    if(dictionary[text.toUpperCase()] == true) {
         return true;
-    }
-    else
-    {
+    }  else{
         return false;
     }
 }
@@ -63,17 +69,14 @@ let highlightDifference = {     // how to highlight the differences between spel
 }
 let voiceSelect = "Joanna";     // TTS voice to use - options are Joanna, Ivy, or Justin
 
-
 /*** Getting saved user data for config varaibles */
 chrome.storage.sync.get(['enableVoice'], function(data){
     if(data.enableVoice != null) {
-        //console.log("Current value for enableVoice: " + data.enableVoice);
         enableVoice = data.enableVoice;
     }
 });
 chrome.storage.sync.get(['enablePictures'], function(data){
     if(data.enablePictures != null) {
-        //console.log("Current value for enablePictures: " + data.enablePictures);
         enablePictures = data.enablePictures;
     }
 });
@@ -145,7 +148,7 @@ var observer = new MutationObserver(function( mutations ) {
               var $node = $( this );
               if($node.get(0).tagName == 'TEXTAREA' || ($node.get(0).tagName == 'INPUT' && ($node.attr('type') == 'text' || $node.attr('type') == 'search'))) {
                   console.log('FOUND DYNAMIC INPUT');
-                  create_mirror($node);
+            //      create_mirror($node);
               }
           });
       }
@@ -198,14 +201,7 @@ function create_mirror($node){
             }
             mirror.css({'top': offset.top,'left': offset.left});
         }, 250);
-
-        /*
-        //copy css from the element
-        $.each(css_to_copy, function(i,v){
-            mirror.css(v, $node.css(v));
-        });
-        */
-    });
+});
 
     
     //Copy scroll position
@@ -231,8 +227,8 @@ function create_mirror($node){
         'pointer-events': 'none',
         'overflow': 'hidden',
         'color': 'limegreen',
-        'z-index': '2147483648', 
-        //'visibility': 'hidden',
+        // 'z-index': '2147483648', 
+        // 'visibility': 'hidden',
     });
     // Input's automatically vertically center text - we try to recreate that
     if($node.get(0).tagName == 'INPUT'){
@@ -258,7 +254,11 @@ function create_mirror($node){
         },750);
         parseElement(target_element, false, $node, svg, mirror);
     });
-    let config = {attributes: true, attributeOldValue: true, childList: true, characterData: true, subtree: true};
+    let config = {  attributes: true, 
+                    attributeOldValue: true, 
+                    childList: true, 
+                    characterData: true, 
+                    subtree: true};
     mirror_observer.observe(target,config);
 
 }
@@ -302,24 +302,25 @@ function parseElement(target, check_spelling, $node, svg, mirror) {
     $(svg).empty();
 
     // loop through each word
-    for (let i = 0; i < words.length; i++) {
-        let word = words[i];
-        end = start+word.length;
+    for (const element of words) {
+        let word = element;
+        end = start + word.length;
 
-        if (!/[^A-Za-z\']/gi.test(word) && ((check_spelling && !dictionary_check(word)) || (!check_spelling && spelling_errors_seen.includes(word)))){
+        if (!/[^A-Za-z\']/gi.test(word) && ((check_spelling && !dictionary_check(word)) || 
+        (check_spelling && spelling_errors_seen.includes(word)))) {
             spelling_errors.push(word);
             range.setStart(target, start);
             range.setEnd(target, end);
             // not getBoundingClientRect as word could wrap
             let rects = range.getClientRects()[0];
-            console.log(range.getClientRects());
 
             // creating circle
             let circle = document.createElementNS("http://www.w3.org/2000/svg",'ellipse');
             circle.setAttribute('stroke-width', 3.0);
             circle.setAttribute('stroke', 'rgba(255, 0, 0, 0.6)');
             circle.setAttribute('rx', rects.width/2.0 + 2);
-            circle.setAttribute('ry', ry = rects.height/2.0 + 2);
+            let ry = rects.height/2.0 + 2;
+            circle.setAttribute('ry', ry);
             console.log(rects.x, rects.y);
             circle.setAttribute('cx', rects.x - offset.left + rects.width/2.0 + $(target.parentElement).scrollLeft());
             circle.setAttribute('cy', rects.y - offset.top + rects.height/2.0 + $(target.parentElement).scrollTop());
@@ -341,7 +342,7 @@ function parseElement(target, check_spelling, $node, svg, mirror) {
             current_spelling_errors.push(word_data);
             console.log(rects);
         }
-        start = end
+        start = end;
 
     }
     //spelling_errors_seen = spelling_errors;
@@ -370,10 +371,13 @@ $(document).on('mousemove', function(data) {
 // This function retrieves suggestions and creates a popup
 function handleSpellingError(word_data){
     let word = word_data.word.replace(/\d/g, "");
-    if (word.length > 29) //refrain from sending long text to the server
+    if (word.length > 29) { //refrain from sending long text to the server
         return;
-
-    selectedWordData = {word: word, index: word_data.index};
+    }
+    selectedWordData = {
+        word: word, 
+        index: word_data.index
+    };
 
     //Make request to server and handle the resulting suggestions
     spellcheckListener({toDo: "spellCheck", keyword: word}).then(res => {
@@ -449,9 +453,9 @@ function createWindowListener(request) {
     
     //repositions window
     var windowWidth = $(window).width();
-    var bodyRect = document.body.getBoundingClientRect()
-        topOffset = rects.y - ($('.kidspell-mirror').scrollTop() - request.scrollY) - bodyRect.top + rects.height + 5,
-        leftOffset = rects.x - ($('.kidspell-mirror').scrollLeft() - request.scrollX) - bodyRect.left;
+    var bodyRect = document.body.getBoundingClientRect();
+    let topOffset = rects.y - ($('.kidspell-mirror').scrollTop() - request.scrollY) - bodyRect.top + rects.height + 5;
+    let leftOffset = rects.x - ($('.kidspell-mirror').scrollLeft() - request.scrollX) - bodyRect.left;
 
     console.log(topOffset, leftOffset);
     //prevents window from going offscren to the right
@@ -600,10 +604,11 @@ $(document).on('click', '.spellingSuggestion', function(data) {
     }
 
     //remove popup
-    let wordIndex = this.getAttribute('index');
-    var popup = document.getElementById("popup-"+wordIndex);
-    if(popup) document.body.removeChild(popup);
+    var popup = this.closest(".kidspell-popup");
 
+    if(popup) {
+        document.body.removeChild(popup);
+    }
 
     //turn off interruption phrases
     stop_playing_suggestions = true;
@@ -629,8 +634,9 @@ $(document).on('click', '#myPopupWord, #closeButton', function(data){
     //remove popup
     let wordIndex = this.getAttribute('index');
     var popup = document.getElementById("popup-"+wordIndex);
-    if(popup) document.body.removeChild(popup);
-
+    if(popup) {
+        document.body.removeChild(popup);
+    }
     //turn off interruption phrases
     dialogue_interruption = false;
 });
@@ -667,8 +673,10 @@ function createPopup(selectedWord, arrayOfSuggestions, eid, wordIndex) {
     // Destroy existing spellchecker if necessary
     if($('#popup-'+wordIndex).length) {
         var popup = document.getElementById("popup-"+wordIndex);
-        if(popup.getAttribute('word')!=word) document.body.removeChild(popup);
-        else return null;
+        if(popup.getAttribute('word')!=word) {
+        document.body.removeChild(popup);
+        }
+    return null;
     }
 
     // Create popup div window
@@ -682,6 +690,11 @@ function createPopup(selectedWord, arrayOfSuggestions, eid, wordIndex) {
     // Create wrappers for all content in popup
     var wrapper = document.createElement('div');
     wrapper.classList.add("contentWrapper");
+    let contentWrapper = document.getElementById("contentWrapper");
+    $("#contentWrapper").click(function(){
+        window.close();
+    });
+
     var leftwrapper = document.createElement('div');
     leftwrapper.classList.add("leftWrapper");
     leftwrapper.style = "width: 100%;";
@@ -753,7 +766,6 @@ function createPopup(selectedWord, arrayOfSuggestions, eid, wordIndex) {
             }
             var div = document.createElement('div');
             div.classList = "spellingSuggestion";
-            div.id = i;
             div.setAttribute('index',i);
     
             // Find difference and put in span 
