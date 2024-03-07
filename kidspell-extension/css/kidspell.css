@@ -3,10 +3,9 @@ box-sizing: border-box;
 }
 
 .wrapWord {
-	/*font-weight: bold; */
+	font-weight: bold;
 	color: red;
-	/*text-decoration: underline;*/
-	
+	text-decoration: underline;
 	padding-left: 7px;
 	padding-right: 7px;
 	margin-left: -7px;
@@ -24,6 +23,10 @@ box-sizing: border-box;
 .wrapWord:hover {
 	/*background-color: #ffcc99;*/
 	cursor: pointer;
+}
+
+.kidspell-error {
+	color: rgba(237, 9, 9, 0.815);
 }
 
 .kidspell-popup {

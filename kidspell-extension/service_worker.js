@@ -23,7 +23,7 @@ const SERVICE_WORKER_REGISTER = {
                             registration.waiting ||
                             registration.active;
         console.log('service worker registered');
-        document.querySelector("output").innerHTML = "Service Worker registered";
+        // document.querySelector("output").innerHTML = "Service Worker registered";
       })
       .catch(error => {
         // console.error('Service Worker registration failed:', error);
@@ -41,11 +41,12 @@ const SERVICE_WORKER_REGISTER = {
     caches.open(SERVICE_WORKER_REGISTER.cacheName)
     .then(cache => {
       console.log(`Cache ${SERVICE_WORKER_REGISTER.cacheName} opened`);
-    
+      const url = URL = window.location.href;
+      url.toString();
       if (
-        URL.startsWith('chrome-extension') ||
-        URL.includes('extension') ||
-        (URL.indexOf('http') !== 0)
+        url.startsWith('chrome-extension') ||
+        url.includes('extension') ||
+        (url.indexOf('http') !== 0)
         ) { 
         return;
         }

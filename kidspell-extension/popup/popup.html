@@ -12,11 +12,11 @@
         <script src="/service_worker.js" defer> </script>
         <div class="popup-wrapper">
             <header class="header-wrapper">
+                <button style="color:red;" class="close-button">X</button>
                 <div class="logo-wrapper">
                     <IMG SRC="../images/Cast-Logo.png" class="cast-logo" alt="logo" width="300" height="150">
                 </div>
-                <h2 style="color:red;" class="close-button" id="closeButton">X</h2>
-    
+        
             </header>
 
             <h1>KidSpell Extension</h1>
@@ -38,26 +38,12 @@
                     <input id="autoRead" type="checkbox" name="Auto Read"/>
                     Automatically Read Suggestions
                 </div>
-                <output> </output>
-                <!--
-                <select id="selectVoice">
-                        <option class="voice" value="Justin" selected>Justin</option>
-                        <option class="voice" value="Ivy">Ivy</option>
-                        <option class="voice" value="Microsoft">Microsoft</option>
-                </select>
-        
-                <div class="optionTitle">Spelling Suggestion Differences</div>
-                <div id="highlightDifference">
-                    <input class="hightlightDifferenceOption" id="highlightBackground" type="checkbox" name="highlightBackground"/>
-                    Highlight Background <br/>
-                    <input class="hightlightDifferenceOption" id="underline"type="checkbox" name="underline"/>
-                    Underline <br/>
-                    <input class="hightlightDifferenceOption" id="changeTextColor" type="checkbox" name="changeTextColor"/>
-                    Change Text Color<br/>
-                </div>
-            -->
-                
+
+                <button class="refresh-button"> Refresh </button>
+
             </div>
+
+            <output class="note"> Refresh page when making change </output>
             
             <script src="popup.js"></script>
 

@@ -8,27 +8,14 @@ self.addEventListener('activate', (ev) => {
 
 self.addEventListener('fetch', (ev) => {
     console.log('intercepted a http request', ev.request);
-}
-)
+})
 
 self.addEventListener('message', (ev) => {  
     console.log('message');
 })
 
-// const exampleSocket = new WebSocket(
-//     "wss://www.example.com/socketserver",
-//     "protocolOne",
-//   );
-
-// exampleSocket.send("Here's some text that the server is urgently awaiting!");
-
 let uuid;
 //Read Dictionary
-
-// let dictionary = {}; 
-// fetch('dictionary.txt')
-// .then(response => response.text())
-// .then(text => { dictionary = new Set(text.split(/\r?\n/))});
 
 let dictionary = {};
   fetch('dictionary.txt')
@@ -38,28 +25,23 @@ let dictionary = {};
 
 
 // Dictionary helper function 
-
-async function set_up_dictionary(text){
-    console.log(dictionary);
+function set_up_dictionary(text){
     text.split(/\r?\n/).forEach(element => dictionary[element] = true);
-    let queryOptions = {active: true, currentWindow: true };
-    const [tab] = await chrome.tabs.query(queryOptions);
-    const response = await chrome.tabs.sendMessage(tab.id, 
-        {todo: "set_dictionary", 
-        dictionary: dictionary});
-    return response;
+    console.log(dictionary);
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+        tabs.forEach(tab => {
+            chrome.tabs.sendMessage(
+                tab.id, {todo: "set_dictionary", dictionary: dictionary},
+                function() {
+                    if (chrome.runtime.lastError) {
+                        setTimeout(function() {
+                            chrome.tabs.sendMessage(tab.id, {todo: "set_dictionary", dictionary: dictionary});
+                        }, 2000);
+                    }
+                });
+        });
+    }); 
 }
-
-/**function(tabs){
-    chrome.tabs.sendMessage(
-        tabs[0].id, 
-        {
-            todo: "set_dictionary", 
-            dictionary: dictionary
-        }
-    );
-}
-**/
 
 chrome.storage.sync.get(['uuid'], function(data){
     console.log("testing");
@@ -80,16 +62,28 @@ function uuidv4() {
     )
 }
 
+chrome.action.onClicked.addListener((tab) => {
+    chrome.tabs.query({currentWindow: true}, function(tabs) {
+      tabs.forEach(function(tab) {
+        chrome.scripting.executeScript({
+          target: {tabId: tab.id},
+          function: () => {
+            console.log("refresh button on click! :)"); 
+            window.location.reload(); 
+        }
+        });
+      });
+    });
+  });
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.todo === 'showAction') {
       chrome.action.enable(sender.tab.id);
     } else if (request.todo === 'hideAction') {
       chrome.action.disable(sender.tab.id);
+    } else if (request.todo == "getDictionary") {
+         sendResponse({dictionary: dictionary});
     }
-    else if (request.todo == "getDictionary") {
-        sendResponse({dictionary: dictionary});
-    }
-
     else if (request.todo == "getSuggestions") {
         $.ajax({
             dataType: "json",
@@ -103,39 +97,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 console.log(result)
             }
         });
-    }
-
-    else if (request.todo == "getUUID") {
-        sendResponse({uuid:uuid});
-    }
-});
-
-chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
-    if (request.todo === 'showAction') {
-      chrome.action.enable(sender.tab.id);
-    } else if (request.todo === 'hideAction') {
-      chrome.action.disable(sender.tab.id);
-    }
-    else if (request.todo == "getDictionary") {
-        sendResponse({dictionary: dictionary});
-    }
-
-    else if (request.todo == "getSuggestions") {
-        $.ajax({
-            dataType: "json",
-            type: "GET",
-            url: "https://cast.boisestate.edu/nodeAPI/nodeSpellcheck.php",
-            data: {
-                "splchk": true,
-                "word" : request.word
-            },
-            success: function(result) {
-                console.log(result)
-            }
-        });
-    }
-
-    else if (request.todo == "getUUID") {
+    } else if (request.todo == "getUUID") {
         sendResponse({uuid:uuid});
     }
 });
