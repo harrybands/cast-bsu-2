@@ -23,7 +23,6 @@ let dictionary = {};
   .then(text => set_up_dictionary(text))
 
 
-
 // Dictionary helper function 
 function set_up_dictionary(text){
     text.split(/\r?\n/).forEach(element => dictionary[element] = true);
@@ -62,19 +61,16 @@ function uuidv4() {
     )
 }
 
-chrome.action.onClicked.addListener((tab) => {
-    chrome.tabs.query({currentWindow: true}, function(tabs) {
-      tabs.forEach(function(tab) {
-        chrome.scripting.executeScript({
-          target: {tabId: tab.id},
-          function: () => {
-            console.log("refresh button on click! :)"); 
-            window.location.reload(); 
-        }
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    console.log('(background.js) message received: ' + request.message);
+    if (request.message === "reload") {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.reload(tabs[0].id);
+            console.log("refresh clicked :(");
         });
-      });
-    });
-  });
+    }
+});
+
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.todo === 'showAction') {

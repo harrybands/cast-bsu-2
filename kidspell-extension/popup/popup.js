@@ -1,19 +1,15 @@
-// close the popup window if click on the close button
-ocument.addEventListener('DOMContentLoaded', function() {
-    var refreshButton = document.getElementById('refresh-button');
+function reload() {
+    chrome.runtime.sendMessage({message: "reload"});
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var refreshButton = document.getElementById("refresh-button");
     if (refreshButton) {
-      refreshButton.addEventListener('click', function() {
-        chrome.tabs.query({currentWindow: true}, function(tabs) {
-          tabs.forEach(function(tab) {
-            chrome.scripting.executeScript({
-              target: {tabId: tab.id},
-              function: () => { location.reload(); }
-            });
-          });
+        refreshButton.addEventListener('click', function() {
+            reload();
         });
-      });
     }
-  });
+});
 
 let enableVoice;
 chrome.storage.sync.get(['enableVoice'], function (data) {
@@ -148,11 +144,3 @@ $("#autoRead").click(function () {
     });
     window.reload();
 })
-
-$(".refresh-button").click(function () {
-    console.log("refreshing");
-    location.reload();
-});
-// $(".refresh-button").click(function() {
-//     window.location.reload();
-// }

@@ -1,16 +1,3 @@
-// self.addEventListener('install', (ev) => {
-//   console.log('installed');
-// })
-
-// self.addEventListener('activate', (ev) => {
-//   console.log('activated');
-// })
-
-// self.addEventListener('fetch', (ev) => {
-//   console.log('intercepted a http request', ev.request);
-// }
-// )
-
 const SERVICE_WORKER_REGISTER = {
   background: null, 
   cacheName: 'dicitionary-cache',
@@ -43,13 +30,13 @@ const SERVICE_WORKER_REGISTER = {
       console.log(`Cache ${SERVICE_WORKER_REGISTER.cacheName} opened`);
       const url = URL = window.location.href;
       url.toString();
-      if (
-        url.startsWith('chrome-extension') ||
-        url.includes('extension') ||
-        (url.indexOf('http') !== 0)
-        ) { 
-        return;
-        }
+      // if (
+      //   url.startsWith('chrome-extension') ||
+      //   url.includes('extension') ||
+      //   (url.indexOf('http') !== 0)
+      //   ) { 
+      //   return;
+      //   }
       let urlString = '/dictionary.txt?id=one';
       cache.add(urlString); // add is fetch + put
       // {
