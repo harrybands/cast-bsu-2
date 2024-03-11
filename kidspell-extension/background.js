@@ -23,21 +23,24 @@ let dictionary = {};
   .then(text => set_up_dictionary(text))
 
 
+// reload when update toggles
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    console.log('(background.js) message received: ' + request.message);
+    if (request.message === "reload") {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.reload(tabs[0].id);
+            console.log("refresh clicked :(");
+        });
+    }
+});
+
 // Dictionary helper function 
 function set_up_dictionary(text){
     text.split(/\r?\n/).forEach(element => dictionary[element] = true);
     console.log(dictionary);
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
         tabs.forEach(tab => {
-            chrome.tabs.sendMessage(
-                tab.id, {todo: "set_dictionary", dictionary: dictionary},
-                function() {
-                    if (chrome.runtime.lastError) {
-                        setTimeout(function() {
-                            chrome.tabs.sendMessage(tab.id, {todo: "set_dictionary", dictionary: dictionary});
-                        }, 2000);
-                    }
-                });
+            chrome.tabs.sendMessage(tab.id, {todo: "set_dictionary", dictionary: dictionary});
         });
     }); 
 }
@@ -60,17 +63,6 @@ function uuidv4() {
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     )
 }
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    console.log('(background.js) message received: ' + request.message);
-    if (request.message === "reload") {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.reload(tabs[0].id);
-            console.log("refresh clicked :(");
-        });
-    }
-});
-
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.todo === 'showAction') {

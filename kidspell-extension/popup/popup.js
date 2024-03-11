@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+
+$(".option").click(function() {
+    console.log("toggles clicked :)");
+    reload();
+})
+
 let enableVoice;
 chrome.storage.sync.get(['enableVoice'], function (data) {
     if (data.enableVoice != null) {
@@ -23,6 +29,10 @@ chrome.storage.sync.get(['enableVoice'], function (data) {
         });
     }
     $("#enableVoice").prop("checked", enableVoice);
+});
+
+$(".close-button").click(function () {
+    window.close();
 });
 
 $("#enableVoice").click(function () {

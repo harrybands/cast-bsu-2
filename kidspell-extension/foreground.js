@@ -62,11 +62,13 @@ let voiceSelect = "Joanna";     // TTS voice to use - options are Joanna, Ivy, o
 /*** Getting saved user data for config varaibles */
 chrome.storage.sync.get(['enableVoice'], function(data){
     if(data.enableVoice != null) {
+        //console.log("Current value for enableVoice: " + data.enableVoice);
         enableVoice = data.enableVoice;
     }
 });
 chrome.storage.sync.get(['enablePictures'], function(data){
     if(data.enablePictures != null) {
+        //console.log("Current value for enablePictures: " + data.enablePictures);
         enablePictures = data.enablePictures;
     }
 });
