@@ -2,20 +2,17 @@ function reload() {
     chrome.runtime.sendMessage({message: "reload"});
 }
 
+
+// Add event listener to elements with the class "option"
 document.addEventListener('DOMContentLoaded', function() {
-    var refreshButton = document.getElementById("refresh-button");
-    if (refreshButton) {
-        refreshButton.addEventListener('click', function() {
+    var optionElements = document.querySelectorAll(".option");
+    optionElements.forEach(function(optionElement) {
+        optionElement.addEventListener('click', function() {
+            console.log("Toggle clicked");
             reload();
         });
-    }
+    });
 });
-
-
-$(".option").click(function() {
-    console.log("toggles clicked :)");
-    reload();
-})
 
 let enableVoice;
 chrome.storage.sync.get(['enableVoice'], function (data) {

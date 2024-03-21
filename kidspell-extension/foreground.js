@@ -112,6 +112,40 @@ const getOffsetTop = element => {
     return offsetTop;
 }
 
+
+// Find the HTML element with the attribute jsname="itVqKe"
+var googleClear = document.querySelector('[jsname="itVqKe"]');
+
+// Add event listener to the element
+if (googleClear) {
+    googleClear.addEventListener('click', function() {
+        // Perform your action here
+        console.log("Element with jsname='itVqKe' clicked");
+        // Add your action code here'
+        $(".kidspell-mirror").remove();
+    });
+}
+
+// var script = document.createElement('script');
+// script.src = 'https://r.bing.com/rp/lmu8EBCaPRMKtay8LSArGyY3mv4.br.js';
+// document.head.appendChild(script);
+
+// Access the div element
+var divElement = document.querySelector('div.clear.icon.tooltip.show');
+
+// Check if the element is found
+if (divElement) {
+    // Manipulate the element here
+    divElement.addEventListener('click', function() {
+        // Perform action when clicked
+        console.log("Div element clicked");
+        // Add your action code here
+    });
+} else {
+    console.log("Div element not found");
+}
+
+
 /*** Check for EXISTING inputs */
 $( "textarea, input" ).each(function( index ) {
     var $node = $( this );
@@ -127,29 +161,24 @@ $( "textarea, input" ).each(function( index ) {
 // What types of input to spellcheck - must be in all caps
 tags_to_check = ['TEXTAREA', 'INPUT'];
 
+
 // Observer
 var observer = new MutationObserver(function( mutations ) {
-    mutations.forEach(function( mutation ) {
-    let googleDeleteTextButton = document.querySelector(
-        '[d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"]');
-    
-    googleDeleteTextButton.addEventListener('click', function() {
-        // Disconnect the current observer
-        // observer.disconnect();
-        console.log("some signal that the code was aware of when the button is clicked");
-        
+    mutations.forEach(function( mutation ) {        
     var newNodes = mutation.addedNodes; // DOM NodeList
     if( newNodes !== null ) { // If there are new nodes added
         var $nodes = $( newNodes ); // jQuery set
         $nodes.each(function() {
             var $node = $( this );
             if($node.get(0).tagName == 'TEXTAREA' || ($node.get(0).tagName == 'INPUT' && ($node.attr('type') == 'text' || $node.attr('type') == 'search'))) {
+                $node.addEventListener('search', function() {
+                    console.log("inside $node :)");
+                })
                 console.log('FOUND DYNAMIC INPUT');
                 create_mirror($node);
             }
         });
-    }
-  });    
+    }    
 });
 // Obvserver config
 var config = {
@@ -743,7 +772,7 @@ function createPopup(selectedWord, arrayOfSuggestions, eid, wordIndex) {
             }
             var div = document.createElement('div');
             div.classList = "spellingSuggestion";
-            div.id = i;
+            //div.id = i;
             div.setAttribute('index',i);
     
             // Find difference and put in span 

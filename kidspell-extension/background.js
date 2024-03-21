@@ -27,9 +27,11 @@ let dictionary = {};
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log('(background.js) message received: ' + request.message);
     if (request.message === "reload") {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.reload(tabs[0].id);
-            console.log("refresh clicked :(");
+        chrome.tabs.query({}, function(tabs) {
+            tabs.forEach(tab => {
+                chrome.tabs.reload(tabs.id);
+            });
+            console.log("All tabs reloaded");
         });
     }
 });
