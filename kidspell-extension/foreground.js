@@ -112,26 +112,47 @@ const getOffsetTop = element => {
     return offsetTop;
 }
 
-
-// Find the HTML element with the attribute jsname="itVqKe"
-var googleClear = document.querySelector('[jsname="itVqKe"]');
-
-// Add event listener to the element
-if (googleClear) {
-    googleClear.addEventListener('click', function() {
-        // Perform your action here
-        console.log("Element with jsname='itVqKe' clicked");
-        // Add your action code here'
-        $(".kidspell-mirror").remove();
+// initialize observer! 
+function initializeObserver() {
+    // disconnect the existing observer if it's already running
+    if (observer) {
+        observer.disconnect();
+    }
+    // create a new MutationObserver
+    var observer = new MutationObserver(function( mutations ) {
+    mutations.forEach(function(mutation) {        
+    var newNodes = mutation.addedNodes; // DOM NodeList
+    if( newNodes !== null ) { // If there are new nodes added
+        var $nodes = $( newNodes ); // jQuery set
+        $nodes.each(function() {
+            var $node = $(this);
+            if($node.get(0).tagName == 'TEXTAREA' || ($node.get(0).tagName == 'INPUT' && ($node.attr('type') == 'text' || $node.attr('type') == 'search'))) {
+                console.log('FOUND DYNAMIC INPUT: ', $nodes);
+                create_mirror($node);
+            }
+        });
+    }    
+});
+// Obvserver config
+    var config = {
+        attributes: true,
+        childList: true,
+        characterData: true,
+        subtree: true
+    };
+    // Starting Observer
+    observer.observe(document.body, config);
     });
 }
 
-// var script = document.createElement('script');
-// script.src = 'https://r.bing.com/rp/lmu8EBCaPRMKtay8LSArGyY3mv4.br.js';
-// document.head.appendChild(script);
+
+// class="clear icon tooltip show"
 
 // Access the div element
-var divElement = document.querySelector('div.clear.icon.tooltip.show');
+// var divElement = document.getElementsByClassName('.clear.icon.tooltip.show');
+// let googleClear = document.querySelector('[jsname="itVqKe"]');
+// //data-bm="304"
+// const divElement = document.querySelector('[data-bm="304"]');
 
 // Check if the element is found
 if (divElement) {
@@ -145,51 +166,52 @@ if (divElement) {
     console.log("Div element not found");
 }
 
-
-/*** Check for EXISTING inputs */
-$( "textarea, input" ).each(function( index ) {
-    var $node = $( this );
-    if($node.get(0).tagName == 'INPUT' && !['search','text'].includes($node.attr('type')))
-        return;
-    console.log('detected existing input');
-    console.log($node.attr('type'));
-    console.log($node);
-    create_mirror($node);
-});
-
 /*** check for DYNAMICALLY ADDED inputs ***/
 // What types of input to spellcheck - must be in all caps
-tags_to_check = ['TEXTAREA', 'INPUT'];
+var tags_to_check = ['TEXTAREA', 'INPUT'];
 
+/*
+* Process each input element
+* $node - node to start processing :)
+*/
+function processInput($node) {
+    // Check if the input element is of type "input" and its type is not "search" or "text"
+    tags_to_check = ($node);
+    if ($node.get(0).tagName == 'INPUT' && !['search', 'text'].includes($node.attr('type'))) {
+        // Return early if the conditions are not met
+        return;
+    }
+    console.log('detected existing input: ', $node);
+    create_mirror($node);
+}
 
-// Observer
-var observer = new MutationObserver(function( mutations ) {
-    mutations.forEach(function( mutation ) {        
-    var newNodes = mutation.addedNodes; // DOM NodeList
-    if( newNodes !== null ) { // If there are new nodes added
-        var $nodes = $( newNodes ); // jQuery set
-        $nodes.each(function() {
-            var $node = $( this );
-            if($node.get(0).tagName == 'TEXTAREA' || ($node.get(0).tagName == 'INPUT' && ($node.attr('type') == 'text' || $node.attr('type') == 'search'))) {
-                $node.addEventListener('search', function() {
-                    console.log("inside $node :)");
-                })
-                console.log('FOUND DYNAMIC INPUT');
-                create_mirror($node);
-            }
-        });
-    }    
+/*** Check for EXISTING inputs */
+// Iterate over all text area and input elements
+function inputCheck() {
+$("textarea, input").each(function(index) {
+    let $node = $(this);
+    // Process each input element
+    processInput($node);
 });
-// Obvserver config
-var config = {
-    attributes: true,
-    childList: true,
-    characterData: true,
-    subtree: true
-};
-// Starting Observer
-observer.observe(document.body, config);
-});
+}
+
+inputCheck();
+
+// Find the HTML element with the attribute jsname="itVqKe"
+let googleClear = document.querySelector('[jsname="itVqKe"]');
+
+// Add event listener to the element
+if (googleClear) {
+    googleClear.addEventListener('click', function($node) {
+    $(".kidspell-mirror").remove();
+    console.log("removed existing mirrors!");
+    // ensure that the MutationObserver is still observing the document body
+    initializeObserver();
+    // iterate over all text area and input element
+    inputCheck();
+    //processInput($nodeReset);
+    });
+}
 
 /**
  * Creates a mirror of the given input object
@@ -200,19 +222,20 @@ function create_mirror($node){
     let offset = {
         left:$node.offset().left,
         top:getOffsetTop($node[0])
-    }
+    };
     var mirror = $("<div class='kidspell-mirror'/>");
     mirror.text(" ");
     let svg = $('<svg class="kidspell-svg" height="600px" width="600px" style="position:absolute;left:0;">');
     mirror.append(svg);
     svg = svg[0];
-    
     //Copy input when they input changes
     $node.on('input',function(){
         current_input=$(this);
         let node_val = $(this).val();
         if (node_val[node_val.length-1] == '\n')
+        {
             node_val += '\n';
+        }
         mirror[0].childNodes[0].nodeValue = node_val;
         //Also a good time to reposition if needed
         setTimeout(function(){ 
@@ -227,7 +250,6 @@ function create_mirror($node){
         $.each(css_to_copy, function(i,v){
             mirror.css(v, $node.css(v));
         });
-        
     });
     
     //Copy scroll position
@@ -284,6 +306,7 @@ function create_mirror($node){
         subtree: true};
     mirror_observer.observe(target,config);
 }
+
 function DelayedSpellCheck(target_element, $node, svg, mirror){
     var curTime = new Date().getTime() / 1000;
     var timeSinceLastInput = curTime - lastInputTime;
@@ -467,7 +490,7 @@ function createWindowListener(request) {
     
     //repositions window
     var windowWidth = $(window).width();
-    var bodyRect = document.body.getBoundingClientRect()
+    var bodyRect = document.body.getBoundingClientRect();
         topOffset = rects.y - ($('.kidspell-mirror').scrollTop() - request.scrollY) - bodyRect.top + rects.height + 5,
         leftOffset = rects.x - ($('.kidspell-mirror').scrollLeft() - request.scrollX) - bodyRect.left;
     console.log(topOffset, leftOffset);
@@ -899,7 +922,7 @@ function imageSearchListener(request) {
                 const result = $.ajax({
                     dataType: "json",
                     type: "GET",
-                    url: "https://cast.boisestate.edu/googleAPI/googleImages.php",
+                    url: "https://cast.boisestate.edu/googleAPI/googleSearchImages.php",
                     data: {
                         "keyword": request.keyword
                     }
