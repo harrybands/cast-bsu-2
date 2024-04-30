@@ -82,6 +82,7 @@ chrome.storage.sync.get(['autoRead'], function(data){
         auto_play_suggestions= data.autoRead;
     }
 });
+
 // CSS to copy
 var css_to_copy = ['border',
             //'margin',
@@ -111,6 +112,35 @@ const getOffsetTop = element => {
     }
     return offsetTop;
 }
+
+bingEvent();
+
+function bingEvent() {
+// class="clear icon tooltip show"
+
+// Access the div element
+    let bingClear = document.querySelector('.clear');
+// Check if the element is found
+    if (bingClear) {
+    console.log("bing clicked 1");
+    // Manipulate the element here
+    bingClear.addEventListener('click', function() {
+        // Perform action when clicked
+        console.log("bing clicked 2");
+        // Add your action code here
+        $(".kidspell-mirror").remove();
+        console.log("removed existing mirrors!");
+        // ensure that the MutationObserver is still observing the document body
+        initializeObserver();
+        // iterate over all text area and input element
+        inputCheck();
+    });
+    } else {
+    console.log("Div element not found");
+    }
+}
+
+document.onclick=bingEvent;
 
 // initialize observer! 
 function initializeObserver() {
@@ -146,25 +176,6 @@ function initializeObserver() {
 }
 
 
-// class="clear icon tooltip show"
-
-// Access the div element
-// var divElement = document.getElementsByClassName('.clear.icon.tooltip.show');
-// let googleClear = document.querySelector('[jsname="itVqKe"]');
-// //data-bm="304"
-// const divElement = document.querySelector('[data-bm="304"]');
-
-// Check if the element is found
-if (divElement) {
-    // Manipulate the element here
-    divElement.addEventListener('click', function() {
-        // Perform action when clicked
-        console.log("Div element clicked");
-        // Add your action code here
-    });
-} else {
-    console.log("Div element not found");
-}
 
 /*** check for DYNAMICALLY ADDED inputs ***/
 // What types of input to spellcheck - must be in all caps
@@ -213,6 +224,20 @@ if (googleClear) {
     });
 }
 
+// Define the function to handle the scroll event
+function handleScroll() {
+    // Reset the process here when the user scrolls
+    $(".kidspell-mirror").remove();
+    console.log("Removed existing mirrors!");
+    // Ensure that the MutationObserver is still observing the document body
+    initializeObserver();
+    // Iterate over all text area and input elements
+    inputCheck();
+}
+
+// Add event listener for scroll event
+window.addEventListener('scroll', handleScroll);
+
 /**
  * Creates a mirror of the given input object
  * 
@@ -256,6 +281,8 @@ function create_mirror($node){
     $node.scroll(function(e) {
         console.log('current scroll left', $node.scrollLeft());
         mirror.scrollTop($node.scrollTop());
+        mirror.scrollY($node.scrollY());
+        mirror.scrollX($node.scrollX());
         mirror.scrollLeft($node.scrollLeft());
     });
     //copy css from the element
@@ -695,6 +722,7 @@ function generate_phrase(){
 
 /* createPopup: Constructs the spellchecker popup */
 function createPopup(selectedWord, arrayOfSuggestions, eid, wordIndex) {
+    // bingClear();
     // Destroy existing spellchecker if necessary
     if($('#popup-'+wordIndex).length) {
         var popup = document.getElementById("popup-"+wordIndex);
@@ -958,7 +986,7 @@ function gotImageListener(request){
                 const query = request.query;
                 storage.setItem("spelling"-query,imageURL);
                 $('.castSuggest-'+query).each(function() {
-                    console.log("attaching image");
+                    console.log("attaching image...");
                     console.log("this:", $(this));
                     $($(this).children()[1]).children()[0].src=imageURL;
                 });

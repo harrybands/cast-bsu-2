@@ -30,7 +30,7 @@ a:link, a:visited {
 }
 
 .close-button {
-    background-color: grey;
+    background-color: rgb(47, 172, 245);
     color: white;
     padding: 5px 10px;
     text-align: center;
@@ -38,6 +38,13 @@ a:link, a:visited {
     font-size: 14px;
     border-radius: 5px;
     border-style: none none solid none;
+    position: fixed;
+    top: 20px; /* Adjust top positioning as needed */
+    right: 20px; /* Adjust right positioning as needed */
+
+}
+.close-button:hover {
+    background-color: rgb(18, 76, 248);
 }
 
 h1, h2 {

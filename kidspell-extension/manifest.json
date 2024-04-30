@@ -34,7 +34,8 @@
                 "dmp/diff_match_patch.js",
                 "foreground.js"],
           "css": ["css/kidspell.css", 
-                "css/all.css"]
+                "css/all.css"],
+          "preload": false
         }
       ],
     "web_accessible_resources": [
